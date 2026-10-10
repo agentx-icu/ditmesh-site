@@ -2,19 +2,21 @@
 
 Official bilingual website for [DitMesh](https://github.com/agentx-icu/ditmesh), served at **https://ditmesh.agentx.icu**.
 
-The page follows the simple, no-framework style of [morsecq-site](https://github.com/agentx-icu/morsecq-site): a static HTML page, local CSS/JavaScript, and GitHub Pages deployment.
+The page follows the simple, no-framework style of [morsecq-site](https://github.com/agentx-icu/morsecq-site): static HTML, local CSS/JavaScript, and GitHub Pages deployment.
 
 ## Files
 
-- `index.html` — English / 简体中文 landing page with language switch.
-- `assets/style.css` — responsive light static styles with the DitMesh signal-card visual.
-- `assets/main.js` — OS-agnostic release cards. It starts with a checked-in v1.0.0 fallback, then asks the GitHub Releases API for the newest non-draft release and rewrites links by asset suffix.
+- `index.html` — English / 简体中文 landing page with a language switch.
+- `assets/style.css` — responsive light/dark styles with the DitMesh signal-card visual.
+- `assets/main.js` — long-lived release resolver. It starts with a checked-in v1.0.0 fallback, then asks GitHub's `/releases/latest` endpoint for the newest stable release and rewrites each package link by a stable asset suffix.
 - `CNAME` — custom domain.
 - `.github/workflows/pages.yml` — deploys the repository root with GitHub Pages.
 
 ## Release links
 
-The checked-in fallback points to **DitMesh v1.0.0** (published 2026-10-10). At the time this site was created, the release contained these packages:
+DitMesh release assets currently carry a version in their filename (for example `ditmesh-1.0.0-macos-arm64.pkg`). The page therefore matches each asset by its stable suffix (`macos-arm64.pkg`, `windows-x64.msi`, `android.apk`, and so on) instead of baking a version into the JavaScript. On every page load, `assets/main.js` calls GitHub's stable `/releases/latest` resolver and swaps in the exact `browser_download_url` for the newest release. This avoids links to an older release when a new version is published while keeping the checked-in v1.0.0 package URLs usable if JavaScript or the GitHub API is unavailable.
+
+The latest checked release at site creation is **DitMesh v1.0.0**, published 2026-10-10:
 
 - macOS arm64/x86_64: `.pkg` and `.zip`
 - Windows x64: `.msi` and `.zip`
@@ -22,8 +24,6 @@ The checked-in fallback points to **DitMesh v1.0.0** (published 2026-10-10). At 
 - Android: `.apk` and `.aab`
 - iOS/iPadOS: unsigned `.ipa`
 - `SHA256SUMS`
-
-The static URLs use the exact v1.0.0 asset names. On page load, `assets/main.js` checks the latest non-draft, non-prerelease release and updates matching cards, so a future release does not leave stale download links.
 
 ## Local preview
 
@@ -43,7 +43,7 @@ The workflow only needs the repository's Pages permissions. No build toolchain o
 
 ## Content updates
 
-Edit both language spans when changing copy. When DitMesh publishes a release, verify the asset suffixes in `assets/main.js` still match the release assets. The dynamic lookup is intentionally best-effort; the checked-in v1.0.0 links remain usable if GitHub API access is unavailable.
+Edit both language spans when changing copy. When DitMesh publishes a release, verify the asset suffixes still match the release assets. The dynamic latest-release lookup is intentionally best-effort; the checked-in v1.0.0 links remain usable if GitHub API access is unavailable.
 
 ## Licence
 
