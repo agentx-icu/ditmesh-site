@@ -25,6 +25,11 @@ The latest checked release at site creation is **DitMesh v1.0.0**, published 202
 - iOS/iPadOS: unsigned `.ipa`
 - `SHA256SUMS`
 
+If a future stable release is missing a package or has duplicate suffix matches,
+the resolver disables that individual link instead of silently retaining the
+v1.0.0 fallback URL. This keeps the release heading and every active download
+link on the same release while making incomplete release assets visible.
+
 ## Local preview
 
 ```bash

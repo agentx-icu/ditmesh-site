@@ -1,7 +1,8 @@
 (() => {
   const REPO = 'agentx-icu/ditmesh';
-  // Keep a checked-in fallback for no-JavaScript visitors; links are replaced
-  // with the newest non-draft release below as soon as the page loads.
+  // Keep a checked-in fallback for no-JavaScript visitors. If a newer release
+  // is missing an expected package, do not leave its link pointing at this
+  // older fallback while the release heading says something else.
   const FALLBACK_TAG = 'v1.0.0';
   const root = document.documentElement;
   const langButton = document.getElementById('langBtn');
@@ -21,7 +22,16 @@
     return ' · ' + (i ? n.toFixed(1) : n) + ' ' + units[i];
   };
 
-  const updateRelease = release => {
+  const setUnavailable = link => {
+    link.removeAttribute('href');
+    link.setAttribute('aria-disabled', 'true');
+    link.classList.add('is-unavailable');
+    link.title = 'This package is not available in this release';
+    const old = link.querySelector('.asset-size');
+    if (old) old.remove();
+  };
+
+  const updateRelease = (release, { fallback = false } = {}) => {
     const tag = release.tag_name || FALLBACK_TAG;
     const encodedTag = encodeURIComponent(tag);
     const base = 'https://github.com/' + REPO + '/releases/download/' + encodedTag + '/';
@@ -38,16 +48,37 @@
     const assets = release.assets || [];
     const sums = assets.find(a => a.name.toUpperCase() === 'SHA256SUMS');
     const sumsLink = document.getElementById('sumsLink');
-    if (sumsLink) sumsLink.href = sums ? sums.browser_download_url : base + 'SHA256SUMS';
+    if (sumsLink) {
+      if (sums && sums.browser_download_url) {
+        sumsLink.href = sums.browser_download_url;
+        sumsLink.removeAttribute('aria-disabled');
+        sumsLink.classList.remove('is-unavailable');
+        sumsLink.removeAttribute('title');
+      } else if (fallback) {
+        sumsLink.href = base + 'SHA256SUMS';
+      } else {
+        setUnavailable(sumsLink);
+      }
+    }
 
     // Asset names currently include the release version (for example
     // ditmesh-1.0.0-macos-arm64.pkg), so match by stable suffix rather than
     // hard-coding that version. This keeps links valid for future releases.
     document.querySelectorAll('[data-asset]').forEach(link => {
       const suffix = link.dataset.asset;
-      const asset = assets.find(a => suffixFor(a.name, suffix));
-      if (!asset || !asset.browser_download_url) return;
+      // A release should have one unambiguous asset for each suffix. If it
+      // does not, mark the link unavailable rather than selecting a similarly
+      // named package or retaining the v1.0.0 fallback URL.
+      const matches = assets.filter(a => suffixFor(a.name, suffix));
+      const asset = matches.length === 1 ? matches[0] : null;
+      if (!asset || !asset.browser_download_url) {
+        if (!fallback) setUnavailable(link);
+        return;
+      }
       link.href = asset.browser_download_url;
+      link.removeAttribute('aria-disabled');
+      link.classList.remove('is-unavailable');
+      link.removeAttribute('title');
       const old = link.querySelector('.asset-size');
       if (old) old.remove();
       const size = document.createElement('small');
@@ -74,7 +105,7 @@
       browser_download_url: 'https://github.com/' + REPO + '/releases/download/' +
         FALLBACK_TAG + '/' + name
     }))
-  });
+  }, { fallback: true });
 
   // /releases/latest is GitHub's stable-release resolver. Unlike a paginated
   // release list it cannot accidentally select an older or prerelease build.
