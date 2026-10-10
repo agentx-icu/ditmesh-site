@@ -45,7 +45,9 @@
       relDate.textContent = new Date(release.published_at).toLocaleDateString();
     }
 
-    const assets = release.assets || [];
+    const assets = Array.isArray(release.assets)
+      ? release.assets.filter(a => a && typeof a.name === 'string')
+      : [];
     const sums = assets.find(a => a.name.toUpperCase() === 'SHA256SUMS');
     const sumsLink = document.getElementById('sumsLink');
     if (sumsLink) {
