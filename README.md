@@ -1,40 +1,72 @@
 # ditmesh-site
 
-Official bilingual website for [DitMesh](https://github.com/agentx-icu/ditmesh), served at **https://ditmesh.agentx.icu**.
+Official website for [DitMesh](https://github.com/agentx-icu/ditmesh), served at
+**https://ditmesh.agentx.icu**.
 
-The page follows the simple, no-framework style of [morsecq-site](https://github.com/agentx-icu/morsecq-site): static HTML, local CSS/JavaScript, and GitHub Pages deployment.
+A static site (no build toolchain, third-party fonts or trackers) in English and 简体中文,
+laid out like [toxee-site](https://github.com/agentx-icu/toxee-site):
 
-## Files
+| URL | Language |
+| --- | --- |
+| `/` | follows the visitor's browser language, with an EN / 中文 toggle |
+| `/en/` | English |
+| `/zh/` | 简体中文 |
 
-- `index.html` — English / 简体中文 landing page with a language switch.
-- `assets/style.css` — responsive light/dark styles with the DitMesh signal-card visual.
-- `assets/main.js` — long-lived release resolver. It starts with a checked-in v1.0.0 fallback, then asks GitHub's `/releases/latest` endpoint for the newest stable release and rewrites each package link by a stable asset suffix.
-- `CNAME` — custom domain.
-- `.github/workflows/pages.yml` — deploys the repository root with GitHub Pages.
+## Layout
+
+| Path | What |
+| --- | --- |
+| `index.html` | The single source page. Every text node exists in both languages as `<span class="en">` / `<span class="zh">`; `html[data-lang]` picks one. |
+| `en/index.html`, `zh/index.html` | **Generated** language-pinned copies. Never edit by hand; run `python3 tools/build_lang_pages.py` after every change to `index.html`. |
+| `tools/build_lang_pages.py` | The generator for the two pages above. |
+| `assets/style.css` | Styles. Light theme follows the app's teal and brass; dark mode follows `prefers-color-scheme`. |
+| `assets/main.js` | Language toggle, tabs, copy buttons, OS detection, the Morse tape and the release resolver. |
+| `assets/img/app_icon.png`, `favicon.png` | The app icon (from `apps/ditmesh/macos/Runner/Assets.xcassets`). |
+| `assets/img/{en,zh}/{desktop,ios,ipad,android}/` | WebP copies of the real UI captures in `ditmesh/doc/screenshots` (desktop = macOS). |
+| `assets/img/{en,zh}/og.jpg` | Social preview image per language. |
+| `CNAME`, `.nojekyll` | GitHub Pages custom domain and raw static serving. |
+| `.github/workflows/pages.yml` | Deploys the repository root with GitHub Pages. |
 
 ## Release links
 
-DitMesh release assets currently carry a version in their filename (for example `ditmesh-1.0.0-macos-arm64.pkg`). The page therefore matches each asset by its stable suffix (`macos-arm64.pkg`, `windows-x64.msi`, `android.apk`, and so on) instead of baking a version into the JavaScript. On every page load, `assets/main.js` calls GitHub's stable `/releases/latest` resolver and swaps in the exact `browser_download_url` for the newest release. This avoids links to an older release when a new version is published while keeping the checked-in v1.0.0 package URLs usable if JavaScript or the GitHub API is unavailable.
+DitMesh release assets carry the version in their filename (for example
+`ditmesh-1.0.1-macos-arm64.pkg`). The page therefore matches each package by its
+stable suffix (`macos-arm64.pkg`, `windows-x64.msi`, `android.apk`, and so on). On
+every page load `assets/main.js` asks GitHub's stable `/releases/latest` resolver for
+the newest release and swaps in each exact `browser_download_url`, file name, size and
+SHA-256 digest. The hero button links the package for the detected OS (and CPU, when
+the browser reveals it); the matching download card and install tab are preselected.
 
-The latest checked release at site creation is **DitMesh v1.0.0**, published 2026-10-10:
+If a stable release is missing a package, or has more than one asset with the same
+suffix, that link is disabled instead of silently pointing at an older release. This
+keeps the version heading and every active download link on the same release.
 
-- macOS arm64/x86_64: `.pkg` and `.zip`
-- Windows x64: `.msi` and `.zip`
-- Linux x86_64: `.deb`, `.rpm`, `.tar.gz`
-- Android: `.apk` and `.aab`
-- iOS/iPadOS: unsigned `.ipa`
-- `SHA256SUMS`
+When JavaScript or the GitHub API is unavailable, the static links in `index.html` and
+the `FALLBACK` block at the top of `assets/main.js` are used. **After each DitMesh
+release, update `FALLBACK` (names, sizes, SHA-256) and the hard-coded `1.0.1` links in
+`index.html`, then regenerate `en/` and `zh/`.**
 
-If a future stable release is missing a package or has duplicate suffix matches,
-the resolver disables that individual link instead of silently retaining the
-v1.0.0 fallback URL. This keeps the release heading and every active download
-link on the same release while making incomplete release assets visible.
+## Screenshots
+
+To refresh the images after the app's captures change, convert them from a DitMesh
+checkout (needs ImageMagick and `cwebp`):
+
+```bash
+S=../ditmesh/doc/screenshots
+for l in en zh; do
+  for s in conversation group_conversation listen reference translator me network_bootstrap backup_wizard chat_list contacts; do
+    magick $S/macos/$l/$s.png -resize 1280x png:- | cwebp -quiet -q 80 -m 6 -o assets/img/$l/desktop/$s.webp -- -
+  done
+done
+```
+
+Phones use 440 px (iOS) and 412 px (Android) widths; the iPad uses 774 px.
 
 ## Local preview
 
 ```bash
 python3 -m http.server 8000
-# open http://localhost:8000/
+# open http://127.0.0.1:8000/, /en/ or /zh/
 ```
 
 ## Deployment
@@ -44,11 +76,11 @@ python3 -m http.server 8000
 3. Point DNS with a CNAME: `ditmesh.agentx.icu CNAME agentx-icu.github.io.`
 4. Push to `main` or run the **pages** workflow manually.
 
-The workflow only needs the repository's Pages permissions. No build toolchain or external fonts are required.
-
 ## Content updates
 
-Edit both language spans when changing copy. When DitMesh publishes a release, verify the asset suffixes still match the release assets. The dynamic latest-release lookup is intentionally best-effort; the checked-in v1.0.0 links remain usable if GitHub API access is unavailable.
+Edit both language spans when changing copy, then run
+`python3 tools/build_lang_pages.py`. Feature claims should match the DitMesh README,
+`doc/operations/NETWORK.md` and `site/privacy.md`.
 
 ## Licence
 
