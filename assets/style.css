@@ -22,3 +22,15 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .key-card{right:0;width:min(220px,calc(100% - 18px));max-width:calc(100% - 18px);overflow:hidden}
   .dl .btn{display:flex;width:100%;margin-right:0}
 }
+
+/* Navigation fit for medium desktop widths */
+@media (min-width:561px) and (max-width:1080px){
+  .nav-in{gap:16px}
+  .nav-links{gap:14px}
+  .nav-act{gap:8px}
+  .gh{display:none}
+}
+@media (min-width:851px) and (max-width:960px){
+  .nav-links{gap:10px}
+  .nav-links a{font-size:.86rem}
+}
