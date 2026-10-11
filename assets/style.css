@@ -34,3 +34,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .nav-links{gap:10px}
   .nav-links a{font-size:.86rem}
 }
+
+/* Prevent intrinsic hero content from widening the page */
+.hero-in,.hero-copy,.hero-art{min-width:0}
+.signal-card{max-width:100%}
+@media(max-width:560px){
+  .hero-copy,.hero-art{width:100%;min-width:0}
+  .signal-card{width:100%;max-width:100%}
+  .signal-morse{white-space:normal;overflow-wrap:anywhere}
+}
