@@ -4,139 +4,591 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DitMesh — Chat in Morse code</title>
-<meta name="description" content="DitMesh is a serverless Morse messenger over the Tox peer-to-peer network. Key private messages and group nets on every device.">
+<meta name="description" content="DitMesh is a free, open-source, serverless Morse messenger over the Tox peer-to-peer network. Key with a straight key or iambic paddles in private chats and group nets on Android, iOS, macOS, Linux and Windows.">
+<meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1a1a" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://ditmesh.agentx.icu/">
-<meta name="theme-color" content="#d38a3a">
+<link rel="alternate" hreflang="en" href="https://ditmesh.agentx.icu/en/">
+<link rel="alternate" hreflang="zh-Hans" href="https://ditmesh.agentx.icu/zh/">
+<link rel="alternate" hreflang="x-default" href="https://ditmesh.agentx.icu/">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/app_icon.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="DitMesh — Chat in Morse code">
-<meta property="og:description" content="A serverless Morse messenger over the Tox peer-to-peer network.">
 <meta property="og:url" content="https://ditmesh.agentx.icu/">
-<link rel="stylesheet" href="assets/style.css">
+<meta property="og:title" content="DitMesh — Chat in Morse code">
+<meta property="og:description" content="A serverless Morse messenger over the Tox peer-to-peer network. No phone number, no account server, no text mode.">
+<meta property="og:image" content="https://ditmesh.agentx.icu/assets/img/en/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <script>
-(function () {
-  var m = /[?&]lang=(en|zh)\b/.exec(location.search), l = m && m[1];
-  try { l = l || localStorage.getItem('ditmesh-lang'); } catch (e) {}
-  if (!l) l = /^zh\b/i.test(navigator.language || '') ? 'zh' : 'en';
-  document.documentElement.setAttribute('data-lang', l);
-  document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
-})();
+  // Pick the language before first paint so the page never flashes the wrong one.
+  (function () {
+    var l = document.documentElement.getAttribute("data-page-lang");
+    if (!l) {
+      try { l = localStorage.getItem("ditmesh-lang"); } catch (e) {}
+      var q = /[?&]lang=(en|zh)\b/.exec(location.search);
+      if (q) l = q[1];
+      if (l !== "en" && l !== "zh") l = /^zh\b/i.test(navigator.language || "") ? "zh" : "en";
+    }
+    document.documentElement.setAttribute("data-lang", l);
+    document.documentElement.lang = l === "zh" ? "zh-Hans" : "en";
+  })();
 </script>
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<a class="skip" href="#main"><span class="en">Skip to content</span><span class="zh">跳到正文</span></a>
+
+<!-- ====================================================== nav -->
 <header class="nav">
   <div class="wrap nav-in">
-    <a class="brand" href="#top"><span class="brand-mark">·−</span><span>DitMesh</span></a>
-    <nav class="nav-links">
+    <a class="brand" href="#top"><img src="assets/img/app_icon.png" alt="" width="30" height="30"><span>DitMesh</span></a>
+    <nav class="nav-links" aria-label="Sections">
       <a href="#features"><span class="en">Features</span><span class="zh">功能</span></a>
-      <a href="#how"><span class="en">How it works</span><span class="zh">工作方式</span></a>
+      <a href="#screens"><span class="en">Screens</span><span class="zh">界面</span></a>
       <a href="#download"><span class="en">Download</span><span class="zh">下载</span></a>
+      <a href="#install"><span class="en">Install</span><span class="zh">安装</span></a>
       <a href="#faq">FAQ</a>
     </nav>
     <div class="nav-act">
-      <button class="lang-btn" id="langBtn" type="button"><span class="en">中文</span><span class="zh">EN</span></button>
-      <a class="gh" href="https://github.com/agentx-icu/ditmesh" aria-label="DitMesh on GitHub">GitHub</a>
+      <button class="lang-toggle" id="langBtn" type="button" data-aria-en="切换到中文" data-aria-zh="Switch to English" aria-label="切换到中文"><span class="en">中文</span><span class="zh">EN</span></button>
+      <a class="gh" href="https://github.com/agentx-icu/ditmesh" rel="noopener" aria-label="DitMesh on GitHub">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
     </div>
   </div>
 </header>
 
-<main id="top">
-<section class="hero">
-  <div class="wrap hero-in">
+<main id="main">
+<!-- ====================================================== hero -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow mono">− · − · &nbsp; · − &nbsp; − − ·</p>
-      <h1><span class="en">Chat in Morse code.</span><span class="zh">用摩尔斯电码聊天。</span></h1>
-      <p class="lede"><span class="en">DitMesh is a serverless Morse messenger over the Tox peer-to-peer network. Key with a straight key or iambic paddle, by touch or physical keyboard, in direct conversations and group nets.</span><span class="zh">DitMesh 是基于 Tox 点对点网络的无服务器摩尔斯电码聊天工具。用触摸或实体键盘操作直键、双桨，在单聊和群组中发报。</span></p>
+      <p class="eyebrow mono" aria-hidden="true">−·−· −−·− &nbsp;−·· ·</p>
+      <h1><span class="en">Chat in<br><em>Morse code.</em></span><span class="zh">用<em>摩尔斯电码</em><br>聊天。</span></h1>
+      <p class="lead"><span class="en">DitMesh is a free, open-source Morse messenger on the Tox peer-to-peer network. Key with a straight key or iambic paddles, by touch or keyboard, in private chats and group nets. There is no server, no phone number and no text mode: every message is sent and heard as code.</span><span class="zh">DitMesh 是基于 Tox 点对点网络的免费开源摩尔斯电码聊天工具。用触摸或键盘操作直键、双桨，在单聊和群组网络中拍发。没有服务器，不要手机号，也没有文字模式：每条消息都以电码发出、以电码收听。</span></p>
       <div class="cta">
-        <a class="btn primary" href="#download"><span class="en">Download DitMesh</span><span class="zh">下载 DitMesh</span></a>
-        <a class="btn ghost" href="https://github.com/agentx-icu/ditmesh"><span class="en">Source on GitHub</span><span class="zh">GitHub 源码</span></a>
+        <a class="btn primary btn-dl" id="heroDl" href="#download">
+          <span class="row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span class="hero-dl-label"><span class="en">Download DitMesh</span><span class="zh">下载 DitMesh</span></span></span>
+          <small class="hero-dl-sub">v1.0.1</small>
+        </a>
+        <a class="btn ghost" href="#features"><span class="en">Take the tour ↓</span><span class="zh">功能导览 ↓</span></a>
       </div>
-      <ul class="pills">
-        <li><span class="en">Free &amp; open source · GPL-3.0</span><span class="zh">免费开源 · GPL-3.0</span></li>
-        <li><span class="en">No phone number or central registration</span><span class="zh">无需手机号或中心注册</span></li>
-        <li>Android · iOS · macOS · Linux · Windows</li>
-      </ul>
+      <p class="hero-alt">
+        <a href="#download"><span class="en">All platforms &amp; packages</span><span class="zh">全部平台与安装包</span></a> ·
+        <a href="https://github.com/agentx-icu/ditmesh" rel="noopener"><span class="en">Source code</span><span class="zh">源代码</span></a>
+      </p>
+      <a class="badge mono" data-release-link href="https://github.com/agentx-icu/ditmesh/releases/tag/v1.0.1"><b aria-hidden="true">●</b><span class="en">latest</span><span class="zh">最新版本</span> <span data-version>v1.0.1</span> · <span data-release-date>2026-10-11</span></a>
     </div>
-    <div class="hero-art" aria-hidden="true">
-      <div class="signal-card">
-        <div class="signal-top"><span class="dot-live"></span><span>TOX / P2P</span><span class="mono">73</span></div>
-        <div class="signal-morse mono">− · − · &nbsp; · − &nbsp; − − · &nbsp; · · ·</div>
-        <div class="signal-caption"><span class="en">A private channel, carried peer to peer.</span><span class="zh">私密频道，点对点传输。</span></div>
-        <div class="signal-lines"><i></i><i></i><i></i><i></i></div>
+    <div class="hero-shot">
+      <div class="frame desk">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>DitMesh</b></div>
+        <img data-shot="desktop/conversation.webp" src="assets/img/en/desktop/conversation.webp" width="1280" height="800"
+             data-alt-en="DitMesh on macOS: a Morse conversation with decoded text under each message and the straight-key pad"
+             data-alt-zh="DitMesh macOS 版：每条消息下方显示译文的摩尔斯对话，以及直键拍发区"
+             alt="DitMesh on macOS: a Morse conversation with decoded text under each message and the straight-key pad">
       </div>
-      <div class="key-card"><span class="key mono">· · · − − − · · ·</span><span class="en">direct · encrypted · yours</span><span class="zh">直连 · 加密 · 属于你</span></div>
+      <div class="frame phone">
+        <img data-shot="ios/conversation.webp" src="assets/img/en/ios/conversation.webp" width="440" height="956"
+             data-alt-en="DitMesh on iPhone: the same conversation in the phone layout" data-alt-zh="DitMesh iPhone 版：手机布局下的同一段对话"
+             alt="DitMesh on iPhone: the same conversation in the phone layout">
+      </div>
     </div>
   </div>
-  <div class="wrap"><p class="status"><strong><span class="en">First stable release · v1.0.0</span><span class="zh">首个稳定版 · v1.0.0</span></strong><span class="en">Packages are available for five platforms. Android uses a debug key and iOS is unsigned for sideloading.</span><span class="zh">五个平台均有安装包。Android 使用 debug 签名，iOS 版本未签名，适合侧载。</span></p></div>
-</section>
-
-<section class="band">
-  <div class="wrap grid4">
-    <div class="hl"><div class="hl-k mono">· − · ·</div><h3><span class="en">Morse-only</span><span class="zh">只用 Morse</span></h3><p><span class="en">Key, listen, preview and correct. There is no ordinary text chat mode.</span><span class="zh">拍发、试听、预览、纠错，不提供普通文字聊天模式。</span></p></div>
-    <div class="hl"><div class="hl-k mono">− · − ·</div><h3><span class="en">Direct &amp; group</span><span class="zh">单聊与群组</span></h3><p><span class="en">Tox contacts, QR codes, group nets and note-to-self.</span><span class="zh">Tox 联系人、二维码、群组网络和发给自己的笔记。</span></p></div>
-    <div class="hl"><div class="hl-k mono">− − · −</div><h3><span class="en">Your identity</span><span class="zh">身份归你</span></h3><p><span class="en">Generated and backed up on your device. No account provider.</span><span class="zh">在设备本地生成和备份，不依赖账号服务。</span></p></div>
-    <div class="hl"><div class="hl-k mono">· − − ·</div><h3><span class="en">Five platforms</span><span class="zh">五大平台</span></h3><p><span class="en">Phone, tablet and desktop layouts with ten interface locales.</span><span class="zh">手机、平板、桌面布局，支持十种界面语言。</span></p></div>
+  <div class="tape" aria-hidden="true"><div class="tape-in mono" id="tape">−·−· −−·− &nbsp; −·−· −−·− &nbsp; −·· · &nbsp; −·· ·· − −− · ··· ···· &nbsp; −·−</div></div>
+  <div class="stats">
+    <div class="wrap stats-in">
+      <div class="stat"><div class="n">0</div><div class="l"><span class="en">chat or push servers</span><span class="zh">聊天或推送服务器</span></div></div>
+      <div class="stat"><div class="n">0</div><div class="l"><span class="en">phone numbers or e-mails needed</span><span class="zh">所需的手机号或邮箱</span></div></div>
+      <div class="stat"><div class="n mono">·−</div><div class="l"><span class="en">Morse in, Morse out: no text mode</span><span class="zh">只用电码收发，没有文字模式</span></div></div>
+      <div class="stat"><div class="n">5</div><div class="l"><span class="en">platforms, phone to desktop</span><span class="zh">平台，从手机到桌面</span></div></div>
+      <div class="stat"><div class="n">10</div><div class="l"><span class="en">interface languages</span><span class="zh">种界面语言</span></div></div>
+    </div>
   </div>
 </section>
 
+<!-- ====================================================== why -->
+<section id="why" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">01 — why DitMesh</span><span class="zh">01 — 为什么是 DitMesh</span></p>
+      <h2><span class="en">A real Morse contact, carried peer to peer.</span><span class="zh">真正的摩尔斯通联，点对点传递。</span></h2>
+      <p><span class="en">Most chat apps let you type. DitMesh asks you to key. It is built for people who want to send and hear the code, with nothing in the middle.</span><span class="zh">大多数聊天应用让你打字，DitMesh 请你拍发。它为想要真正发报、收听电码的人打造，中间没有任何服务器。</span></p>
+    </div>
+    <div class="grid3">
+      <div class="card">
+        <span class="tag mono">· − · ·</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="14" width="18" height="5" rx="1.5"/><path d="M7 14l3-6h7"/><circle cx="17" cy="8" r="1.8"/></svg></div>
+        <h3><span class="en">Morse-only by design</span><span class="zh">只用电码，是设计初衷</span></h3>
+        <p><span class="en">Key, preview, pre-listen and correct. The decoded draft is read-only, so the code you send is the code you keyed. There is no ordinary text-chat mode.</span><span class="zh">拍发、预览、试听、纠错。解码后的草稿只读，你发出去的就是你拍下的电码。不提供普通文字聊天模式。</span></p>
+      </div>
+      <div class="card">
+        <span class="tag mono">TOX</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="5" cy="7" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M7 8l4 9M17.2 7.4L13.4 17M7.2 7h9.6"/></svg></div>
+        <h3><span class="en">No server in the middle</span><span class="zh">中间没有服务器</span></h3>
+        <p><span class="en">Messages travel end-to-end encrypted over Tox. There is no messaging or push server, and no developer server stores undelivered messages.</span><span class="zh">消息经 Tox 端到端加密传输。没有聊天或推送服务器，也没有开发者服务器替你保存未送达的消息。</span></p>
+      </div>
+      <div class="card">
+        <span class="tag mono">ID</span>
+        <div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.6"/></svg></div>
+        <h3><span class="en">An identity that lives on your device</span><span class="zh">身份只在你的设备上</span></h3>
+        <p><span class="en">Your Tox identity is generated locally and can be protected with a password. Share it as a Tox ID or QR code; back it up with an encrypted export.</span><span class="zh">Tox 身份在本地生成，可用密码保护。以 Tox ID 或二维码分享，用加密导出做备份。</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== features -->
 <section id="features" class="sec">
-<div class="wrap">
-<h2 class="sec-h"><span class="en">Everything for a real Morse conversation</span><span class="zh">一次真正的摩尔斯通联，所需的一切</span></h2>
-<p class="sec-sub"><span class="en">A focused messenger for people who want to send and hear the code, not type around it.</span><span class="zh">为想要真正拍发和收听电码的人打造，而不是绕开电码打字。</span></p>
-<div class="feature-grid">
-<article class="feature"><div class="feature-icon">⌁</div><h3><span class="en">Key by hand</span><span class="zh">亲手拍发</span></h3><p><span class="en">Use a touch or physical straight key, iambic paddle or desktop keyboard. Drafts keep the real mark and gap timing.</span><span class="zh">支持触摸或实体直键、双桨和桌面键盘。草稿会保留真实的点划与间隔时序。</span></p></article>
-<article class="feature"><div class="feature-icon">◌</div><h3><span class="en">Listen your way</span><span class="zh">按你的方式收听</span></h3><p><span class="en">Pause, repeat a word range, reveal after listening and choose original rhythm or your own speed and Farnsworth spacing.</span><span class="zh">暂停、重复词段、先听后揭晓，可选原始节奏或自定义速度与 Farnsworth 间距。</span></p></article>
-<article class="feature"><div class="feature-icon">◎</div><h3><span class="en">Stay in control</span><span class="zh">掌控消息</span></h3><p><span class="en">Search history, bookmark, cancel queued sends and retry failures without duplicate bubbles.</span><span class="zh">搜索历史、添加书签、取消排队消息，失败重试也不会重复生成气泡。</span></p></article>
-<article class="feature"><div class="feature-icon">✦</div><h3><span class="en">Private by design</span><span class="zh">为隐私而生</span></h3><p><span class="en">Encrypted peer-to-peer transport, local notifications and blocked peers. No chat or push server.</span><span class="zh">加密点对点传输、本地通知和联系人屏蔽，没有聊天或推送服务器。</span></p></article>
-<article class="feature"><div class="feature-icon">⌘</div><h3><span class="en">Reference built in</span><span class="zh">内置参考</span></h3><p><span class="en">Alphabet, prosigns, Q-codes, translator, Chinese telegraph-code interpretation and key bindings.</span><span class="zh">字母、程序信号、Q 简语、译码器、中文电报码解读和按键配置。</span></p></article>
-<article class="feature"><div class="feature-icon">↗</div><h3><span class="en">Interoperable</span><span class="zh">互通</span></h3><p><span class="en">Talk to DitMesh users and compatible Tox clients such as <a href="https://github.com/agentx-icu/toxee">toxee</a>.</span><span class="zh">可与 DitMesh 用户及 <a href="https://github.com/agentx-icu/toxee">toxee</a> 等兼容 Tox 客户端聊天。</span></p></article>
-</div>
-</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">02 — what it does</span><span class="zh">02 — 功能详解</span></p>
+      <h2><span class="en">Everything for a real Morse conversation.</span><span class="zh">一次真正的摩尔斯通联，所需的一切。</span></h2>
+      <p><span class="en">Chat, Groups, Reference and Me: four destinations, the same on phone, tablet and desktop.</span><span class="zh">聊天、群组、参考、我的：四个入口，在手机、平板和桌面上保持一致。</span></p>
+    </div>
+
+    <!-- keying -->
+    <div class="feat">
+      <div class="feat-copy">
+        <p class="kicker"><span class="en">keying</span><span class="zh">拍发</span></p>
+        <h3><span class="en">Key by hand, keep the rhythm.</span><span class="zh">亲手拍发，保留节奏。</span></h3>
+        <p><span class="en">Use the on-screen pad or a physical key. DitMesh decodes your marks as you go and records their real timing, so a friend on DitMesh can replay your fist, not a machine's.</span><span class="zh">用屏幕按键或实体按键拍发。DitMesh 边拍边解码，并记录真实时序，对方用 DitMesh 收听时听到的是你的手法，而不是机器合成。</span></p>
+        <ul class="ticks">
+          <li><span class="en"><b>Straight key &amp; iambic paddles</b>: by touch, keyboard or configurable device key bindings.</span><span class="zh"><b>直键与双桨</b>：支持触摸、键盘及可自定义的设备按键映射。</span></li>
+          <li><span class="en"><b>Preview before sending</b>: Morse preview, pre-listen, correction and a byte counter.</span><span class="zh"><b>发送前预览</b>：电码预览、试听、纠错，以及剩余字节提示。</span></li>
+          <li><span class="en"><b>Real timing kept</b>: drafts, history, offline sends and selected backup components preserve mark and gap timing.</span><span class="zh"><b>保留真实时序</b>：草稿、历史、离线发送和所选备份内容都会保留点划与间隔时序。</span></li>
+          <li><span class="en"><b>A guided first contact</b>: a dismissible guide opens note-to-self for real keying and listening.</span><span class="zh"><b>新手引导</b>：可关闭的引导会打开“发给自己”，让你先实际拍发和收听。</span></li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b><span class="en">chat — Alex Chen</span><span class="zh">聊天 — Alex Chen</span></b></div>
+        <img data-shot="desktop/conversation.webp" src="assets/img/en/desktop/conversation.webp" width="1280" height="800" loading="lazy"
+             data-alt-en="DitMesh desktop: a direct Morse conversation with the straight key pad" data-alt-zh="DitMesh 桌面端：带直键拍发区的单聊摩尔斯对话"
+             alt="DitMesh desktop: a direct Morse conversation with the straight key pad">
+      </div>
+    </div>
+
+    <!-- listening -->
+    <div class="feat flip">
+      <div class="phone-duo">
+        <div class="frame phone-f"><img data-shot="ios/conversation.webp" src="assets/img/en/ios/conversation.webp" width="440" height="956" loading="lazy"
+             data-alt-en="DitMesh on iPhone: messages with play controls" data-alt-zh="DitMesh iPhone 版：带播放按钮的消息" alt="DitMesh on iPhone: messages with play controls"></div>
+        <div class="frame phone-f"><img data-shot="ios/listen.webp" src="assets/img/en/ios/listen.webp" width="440" height="956" loading="lazy"
+             data-alt-en="DitMesh on iPhone: the Listen screen decoding a Morse tone" data-alt-zh="DitMesh iPhone 版：解码摩尔斯音调的收听界面" alt="DitMesh on iPhone: the Listen screen decoding a Morse tone"></div>
+      </div>
+      <div class="feat-copy">
+        <p class="kicker"><span class="en">listening</span><span class="zh">收听</span></p>
+        <h3><span class="en">Hear it your way, at your speed.</span><span class="zh">按你的方式，用你的速度收听。</span></h3>
+        <p><span class="en">Every message has a player. Choose the sender's original rhythm or your own speed and Farnsworth spacing, and listen before you look.</span><span class="zh">每条消息都带播放器。可选发送方的原始节奏，或你自己的速度与 Farnsworth 间距，先听后看。</span></p>
+        <ul class="ticks">
+          <li><span class="en"><b>Word-level control</b>: pause, resume, jump between words, repeat or loop a range, with the current word highlighted.</span><span class="zh"><b>逐词控制</b>：暂停、继续、按词跳转、重复或循环一段，当前词高亮。</span></li>
+          <li><span class="en"><b>Listen first, reveal later</b>: listen-only and copy exercises keep the text hidden until you choose.</span><span class="zh"><b>先听后揭晓</b>：纯收听与抄收练习会隐藏文字，直到你主动揭晓。</span></li>
+          <li><span class="en"><b>Audio, haptic or flash</b>, with listening preferences saved per conversation.</span><span class="zh"><b>声音、振动或闪光</b>输出，收听偏好按会话保存。</span></li>
+          <li><span class="en"><b>Decode a real signal</b>: the Listen screen decodes Morse tones from the microphone, locally.</span><span class="zh"><b>解码真实信号</b>：收听界面可通过麦克风在本地解码摩尔斯音调。</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- groups -->
+    <div class="feat">
+      <div class="feat-copy">
+        <p class="kicker"><span class="en">group nets</span><span class="zh">群组网络</span></p>
+        <h3><span class="en">Run a net without a net server.</span><span class="zh">没有服务器的群组网络。</span></h3>
+        <p><span class="en">Groups are hosted by their members over Tox. Create one, invite friends or join with a group ID. DitMesh rejoins your groups after a restart, and group messages use the same Morse composer.</span><span class="zh">群组由成员通过 Tox 共同承载。可以创建、邀请好友或凭群 ID 加入；DitMesh 重启后会自动重新加入，群消息使用同一个摩尔斯拍发器。</span></p>
+        <ul class="ticks">
+          <li><span class="en"><b>Member management</b>: invite, manage members and practise together.</span><span class="zh"><b>成员管理</b>：邀请、管理成员，一起练习。</span></li>
+          <li><span class="en"><b>Honest receipts</b>: queued, sent and delivered mean exactly that. A group receipt confirms at least one member, not that everyone listened.</span><span class="zh"><b>如实的回执</b>：排队、已发送、已送达各有明确含义。群回执只代表至少一名成员收到，不代表所有人都听过。</span></li>
+          <li><span class="en"><b>Search &amp; bookmarks</b>: search history, filter, jump to a result and bookmark messages.</span><span class="zh"><b>搜索与书签</b>：搜索历史、筛选、跳转到结果、为消息加书签。</span></li>
+        </ul>
+      </div>
+      <div class="duo">
+        <div class="frame">
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>Weekend Net</b></div>
+          <img data-shot="desktop/group_conversation.webp" src="assets/img/en/desktop/group_conversation.webp" width="1280" height="800" loading="lazy"
+               data-alt-en="DitMesh desktop: a group net with several members keying" data-alt-zh="DitMesh 桌面端：多名成员拍发的群组网络" alt="DitMesh desktop: a group net with several members keying">
+        </div>
+        <div class="frame">
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>iPad</b></div>
+          <img data-shot="ipad/group_conversation.webp" src="assets/img/en/ipad/group_conversation.webp" width="774" height="1032" loading="lazy"
+               data-alt-en="DitMesh on iPad: a group net in the split layout" data-alt-zh="DitMesh iPad 版：分栏布局中的群组网络" alt="DitMesh on iPad: a group net in the split layout">
+        </div>
+      </div>
+    </div>
+
+    <!-- reference -->
+    <div class="feat flip">
+      <div class="duo">
+        <div class="frame">
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b><span class="en">reference</span><span class="zh">参考</span></b></div>
+          <img data-shot="desktop/reference.webp" src="assets/img/en/desktop/reference.webp" width="1280" height="800" loading="lazy"
+               data-alt-en="DitMesh desktop: the Morse reference with alphabet, prosigns and Q-codes" data-alt-zh="DitMesh 桌面端：包含字母、程序信号与 Q 简语的摩尔斯参考" alt="DitMesh desktop: the Morse reference with alphabet, prosigns and Q-codes">
+        </div>
+        <div class="frame">
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b><span class="en">translator</span><span class="zh">翻译器</span></b></div>
+          <img data-shot="desktop/translator.webp" src="assets/img/en/desktop/translator.webp" width="1280" height="800" loading="lazy"
+               data-alt-en="DitMesh desktop: the translator turning text into Morse" data-alt-zh="DitMesh 桌面端：把文字转成电码的翻译器" alt="DitMesh desktop: the translator turning text into Morse">
+        </div>
+      </div>
+      <div class="feat-copy">
+        <p class="kicker"><span class="en">reference</span><span class="zh">参考</span></p>
+        <h3><span class="en">The code book is built in.</span><span class="zh">电码手册，就在应用里。</span></h3>
+        <p><span class="en">Tap any card to hear it. Look up a prosign mid-QSO, translate in both directions, or check how a Chinese telegraph code reads.</span><span class="zh">点按任意卡片即可试听。通联中随时查程序信号、双向翻译，或查看中文电报码的含义。</span></p>
+        <ul class="ticks">
+          <li><span class="en"><b>Alphabet, punctuation, prosigns, Q-codes and CW abbreviations</b>, searchable.</span><span class="zh"><b>字母、标点、程序信号、Q 简语与 CW 缩语</b>，均可搜索。</span></li>
+          <li><span class="en"><b>Translator</b>: text to Morse, Morse to text, and keying practice.</span><span class="zh"><b>翻译器</b>：文字转电码、电码转文字，以及拍发练习。</span></li>
+          <li><span class="en"><b>Chinese telegraph code</b> interpretation for four-digit groups.</span><span class="zh"><b>中文电报码</b>：解读四位数字码组。</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- identity -->
+    <div class="feat">
+      <div class="feat-copy">
+        <p class="kicker"><span class="en">identity &amp; backup</span><span class="zh">身份与备份</span></p>
+        <h3><span class="en">Your keys stay with you.</span><span class="zh">密钥只在你手里。</span></h3>
+        <p><span class="en">Without an account server there is no “forgot password” link. DitMesh walks you through a backup the moment you create an identity, and gives you the tools to move it.</span><span class="zh">没有账号服务器，也就没有“找回密码”。创建身份后，DitMesh 会立即引导你备份，并提供迁移身份的工具。</span></p>
+        <ul class="ticks">
+          <li><span class="en"><b>Password-protected identity</b> and an encrypted export you can preview and restore selectively.</span><span class="zh"><b>密码保护的身份</b>，以及可预览、可选择性恢复的加密导出。</span></li>
+          <li><span class="en"><b>Bring your Tox profile</b>: import an existing Tox profile or restore a DitMesh backup.</span><span class="zh"><b>沿用 Tox 资料</b>：导入已有的 Tox 资料，或恢复 DitMesh 备份。</span></li>
+          <li><span class="en"><b>Contacts you approve</b>: Tox ID and QR contacts, friend requests and blocked peers.</span><span class="zh"><b>由你决定的联系人</b>：Tox ID 与二维码添加、好友申请、屏蔽联系人。</span></li>
+        </ul>
+      </div>
+      <div class="phone-duo">
+        <div class="frame phone-f"><img data-shot="ios/backup_wizard.webp" src="assets/img/en/ios/backup_wizard.webp" width="440" height="956" loading="lazy"
+             data-alt-en="DitMesh on iPhone: the backup wizard after creating an identity" data-alt-zh="DitMesh iPhone 版：创建身份后的备份向导" alt="DitMesh on iPhone: the backup wizard after creating an identity"></div>
+        <div class="frame phone-f"><img data-shot="ios/me.webp" src="assets/img/en/ios/me.webp" width="440" height="956" loading="lazy"
+             data-alt-en="DitMesh on iPhone: the Me page with Tox ID, password and backup options" data-alt-zh="DitMesh iPhone 版：显示 Tox ID、密码与备份选项的“我的”页面" alt="DitMesh on iPhone: the Me page with Tox ID, password and backup options"></div>
+      </div>
+    </div>
+
+    <!-- network -->
+    <div class="feat flip">
+      <div class="frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b><span class="en">network &amp; bootstrap</span><span class="zh">网络与引导节点</span></b></div>
+        <img data-shot="desktop/network_bootstrap.webp" src="assets/img/en/desktop/network_bootstrap.webp" width="1280" height="800" loading="lazy"
+             data-alt-en="DitMesh desktop: network settings with automatic, manual and LAN host modes" data-alt-zh="DitMesh 桌面端：自动、手动与局域网主机模式的网络设置" alt="DitMesh desktop: network settings with automatic, manual and LAN host modes">
+      </div>
+      <div class="feat-copy">
+        <p class="kicker"><span class="en">network</span><span class="zh">网络</span></p>
+        <h3><span class="en">On the open Tox network, or only on your LAN.</span><span class="zh">既能连公共 Tox 网络，也能只在局域网里用。</span></h3>
+        <p><span class="en">Bootstrap nodes help peers find each other; they cannot read your messages. You choose which nodes DitMesh uses, even before unlocking an identity.</span><span class="zh">引导节点只帮助双方互相找到，无法读取消息。使用哪些节点由你决定，解锁身份之前也能设置。</span></p>
+        <ul class="ticks">
+          <li><span class="en"><b>Automatic</b>: built-in seeds (IPv4 and IPv6), refreshed from the official Tox node list in the background.</span><span class="zh"><b>自动</b>：内置种子节点（IPv4 与 IPv6），后台刷新官方 Tox 节点列表。</span></li>
+          <li><span class="en"><b>Manual</b>: enter a node's host, port and key, and test it before you apply it.</span><span class="zh"><b>手动</b>：填写节点地址、端口和公钥，应用前先测试连通性。</span></li>
+          <li><span class="en"><b>LAN host</b>: a desktop can host a node so phones and tablets on the same network can chat without the internet.</span><span class="zh"><b>局域网主机</b>：桌面端可托管节点，同一网络中的手机和平板无需互联网也能聊天。</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- more -->
+    <div class="grid4">
+      <div class="card mini"><h3><span class="en">Ten languages</span><span class="zh">十种语言</span></h3><p><span class="en">English, 简体中文, 繁體中文, 日本語, 한국어, Deutsch, Français, Español, Português and Русский.</span><span class="zh">English、简体中文、繁體中文、日本語、한국어、Deutsch、Français、Español、Português、Русский。</span></p></div>
+      <div class="card mini"><h3><span class="en">Five styles</span><span class="zh">五种风格</span></h3><p><span class="en">Classic Brass, Modern Calm, Night Radio, Paper Handbook and Fresh Cartoon, each in light, dark or system brightness.</span><span class="zh">经典黄铜、现代静谧、夜间电台、纸质手册、清新卡通，均可选浅色、深色或跟随系统。</span></p></div>
+      <div class="card mini"><h3><span class="en">Interoperable</span><span class="zh">跨客户端互通</span></h3><p><span class="en">Chat with Tox clients such as <a href="https://toxee.agentx.icu">toxee</a>. They receive ordinary text; original rhythm is shared between DitMesh clients.</span><span class="zh">可与 <a href="https://toxee.agentx.icu">toxee</a> 等 Tox 客户端聊天。对方收到普通文字；原始节奏仅在 DitMesh 客户端之间传递。</span></p></div>
+      <div class="card mini"><h3><span class="en">Desktop-native</span><span class="zh">桌面原生体验</span></h3><p><span class="en">Responsive panes, remembered window size, tray icon, unread badge and local notifications.</span><span class="zh">自适应分栏、记住窗口尺寸、托盘图标、未读角标和本地通知。</span></p></div>
+    </div>
+  </div>
 </section>
 
-<section id="how" class="sec alt">
-<div class="wrap narrow">
-<h2 class="sec-h"><span class="en">How a message travels</span><span class="zh">一条消息如何传递</span></h2>
-<ol class="flow">
-<li><span class="n mono">1</span><div><h3><span class="en">You key it</span><span class="zh">你拍发</span></h3><p><span class="en">Tap, squeeze or press. DitMesh decodes your marks while keeping their rhythm.</span><span class="zh">点按、按压或敲击。DitMesh 在保留节奏的同时解码你的拍发。</span></p></div></li>
-<li><span class="n mono">2</span><div><h3><span class="en">Tox carries it</span><span class="zh">Tox 传输</span></h3><p><span class="en">Plain text and timing travel end-to-end encrypted between reachable peers.</span><span class="zh">文字与时序经端到端加密，在可达的对等设备之间传输。</span></p></div></li>
-<li><span class="n mono">3</span><div><h3><span class="en">They hear it</span><span class="zh">对方收听</span></h3><p><span class="en">Their player follows their preferred speed, spacing and audio or haptic output.</span><span class="zh">对方播放器按其设定的速度、间距和音频/触觉方式播放。</span></p></div></li>
-</ol>
-</div>
+<!-- ====================================================== screens -->
+<section id="screens" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">03 — every screen</span><span class="zh">03 — 每一块屏幕</span></p>
+      <h2><span class="en">One app, from phone to desktop.</span><span class="zh">一个应用，从手机到桌面。</span></h2>
+      <p><span class="en">Real captures from the app with demo data. Desktop and tablet use a side-by-side layout; phones get a focused one-handed layout.</span><span class="zh">均为应用真实截图（演示数据）。桌面与平板为分栏布局，手机为专注的单手布局。</span></p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Platform">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="g-desktop" id="t-desktop" data-key="desktop" type="button"><span class="en">Desktop</span><span class="zh">桌面</span></button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="g-ipad" id="t-ipad" data-key="ipad" tabindex="-1" type="button">iPad</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="g-ios" id="t-ios" data-key="ios" tabindex="-1" type="button">iPhone</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="g-android" id="t-android" data-key="android" tabindex="-1" type="button">Android</button>
+    </div>
+    <div class="gallery desktop" id="g-desktop" role="tabpanel" tabindex="0" aria-labelledby="t-desktop">
+      <figure><div class="frame"><img data-shot="desktop/chat_list.webp" src="assets/img/en/desktop/chat_list.webp" width="1280" height="800" loading="lazy" alt=""></div><figcaption><span class="en">chats</span><span class="zh">会话列表</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="desktop/contacts.webp" src="assets/img/en/desktop/contacts.webp" width="1280" height="800" loading="lazy" alt=""></div><figcaption><span class="en">contacts &amp; requests</span><span class="zh">联系人与好友申请</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="desktop/listen.webp" src="assets/img/en/desktop/listen.webp" width="1280" height="800" loading="lazy" alt=""></div><figcaption><span class="en">listen &amp; decode</span><span class="zh">收听与解码</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="desktop/me.webp" src="assets/img/en/desktop/me.webp" width="1280" height="800" loading="lazy" alt=""></div><figcaption><span class="en">me &amp; settings</span><span class="zh">我的与设置</span></figcaption></figure>
+    </div>
+    <div class="gallery ipad" id="g-ipad" role="tabpanel" tabindex="0" aria-labelledby="t-ipad" hidden>
+      <figure><div class="frame"><img data-shot="ipad/conversation.webp" src="assets/img/en/ipad/conversation.webp" width="774" height="1032" loading="lazy" alt=""></div><figcaption><span class="en">direct chat</span><span class="zh">单聊</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="ipad/reference.webp" src="assets/img/en/ipad/reference.webp" width="774" height="1032" loading="lazy" alt=""></div><figcaption><span class="en">reference</span><span class="zh">参考</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="ipad/listen.webp" src="assets/img/en/ipad/listen.webp" width="774" height="1032" loading="lazy" alt=""></div><figcaption><span class="en">listen</span><span class="zh">收听</span></figcaption></figure>
+    </div>
+    <div class="gallery phone" id="g-ios" role="tabpanel" tabindex="0" aria-labelledby="t-ios" hidden>
+      <figure><div class="frame"><img data-shot="ios/welcome.webp" src="assets/img/en/ios/welcome.webp" width="440" height="956" loading="lazy" alt=""></div><figcaption><span class="en">welcome</span><span class="zh">欢迎</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="ios/chat_list.webp" src="assets/img/en/ios/chat_list.webp" width="440" height="956" loading="lazy" alt=""></div><figcaption><span class="en">chats</span><span class="zh">会话</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="ios/group_conversation.webp" src="assets/img/en/ios/group_conversation.webp" width="440" height="956" loading="lazy" alt=""></div><figcaption><span class="en">group net</span><span class="zh">群组</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="ios/reference.webp" src="assets/img/en/ios/reference.webp" width="440" height="956" loading="lazy" alt=""></div><figcaption><span class="en">reference</span><span class="zh">参考</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="ios/translator.webp" src="assets/img/en/ios/translator.webp" width="440" height="956" loading="lazy" alt=""></div><figcaption><span class="en">translator</span><span class="zh">翻译器</span></figcaption></figure>
+    </div>
+    <div class="gallery phone" id="g-android" role="tabpanel" tabindex="0" aria-labelledby="t-android" hidden>
+      <figure><div class="frame"><img data-shot="android/conversation.webp" src="assets/img/en/android/conversation.webp" width="412" height="916" loading="lazy" alt=""></div><figcaption><span class="en">direct chat</span><span class="zh">单聊</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="android/group_conversation.webp" src="assets/img/en/android/group_conversation.webp" width="412" height="916" loading="lazy" alt=""></div><figcaption><span class="en">group net</span><span class="zh">群组</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="android/reference.webp" src="assets/img/en/android/reference.webp" width="412" height="916" loading="lazy" alt=""></div><figcaption><span class="en">reference</span><span class="zh">参考</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="android/translator.webp" src="assets/img/en/android/translator.webp" width="412" height="916" loading="lazy" alt=""></div><figcaption><span class="en">translator</span><span class="zh">翻译器</span></figcaption></figure>
+      <figure><div class="frame"><img data-shot="android/me.webp" src="assets/img/en/android/me.webp" width="412" height="916" loading="lazy" alt=""></div><figcaption><span class="en">me</span><span class="zh">我的</span></figcaption></figure>
+    </div>
+  </div>
 </section>
 
+<!-- ====================================================== download -->
 <section id="download" class="sec">
-<div class="wrap">
-<h2 class="sec-h"><span class="en">Download</span><span class="zh">下载</span></h2>
-<p class="sec-sub"><span class="en">Latest release:</span><span class="zh">最新版本：</span> <a id="relLink" href="https://github.com/agentx-icu/ditmesh/releases/tag/v1.0.0"><b id="relName">v1.0.0</b></a> <span id="relDate" class="muted">10 Oct 2026</span> · <a id="sumsLink" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/SHA256SUMS">SHA256SUMS</a></p>
-<div class="dl-grid">
-<div class="dl"><h3>macOS</h3><p class="req"><span class="en">Apple silicon</span><span class="zh">Apple 芯片</span></p><a class="btn primary" data-asset="macos-arm64.pkg" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-macos-arm64.pkg">.pkg</a><a class="alt-link" data-asset="macos-arm64.zip" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-macos-arm64.zip">.zip</a><p class="note"><span class="en">Intel builds are also in the release.</span><span class="zh">发布页也提供 Intel 构建。</span></p></div>
-<div class="dl"><h3>Windows</h3><p class="req">Windows 10/11 · x64</p><a class="btn primary" data-asset="windows-x64.msi" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-windows-x64.msi">.msi</a><a class="alt-link" data-asset="windows-x64.zip" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-windows-x64.zip">.zip</a></div>
-<div class="dl"><h3>Linux</h3><p class="req">x86_64</p><a class="btn primary" data-asset="linux-x86_64.deb" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-linux-x86_64.deb">.deb</a><a class="btn soft" data-asset="linux-x86_64.rpm" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-linux-x86_64.rpm">.rpm</a><a class="alt-link" data-asset="linux-x86_64.tar.gz" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-linux-x86_64.tar.gz">.tar.gz</a></div>
-<div class="dl"><h3>Android</h3><p class="req">arm64 · armv7 · x86_64</p><a class="btn primary" data-asset="android.apk" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-android.apk">.apk</a><a class="alt-link" data-asset="android.aab" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-android.aab">.aab</a><p class="note"><span class="en">Debug key for sideloading; not for Google Play.</span><span class="zh">debug 签名，适合侧载，暂不用于 Google Play。</span></p></div>
-<div class="dl"><h3>iOS / iPadOS</h3><p class="req"><span class="en">Unsigned build</span><span class="zh">未签名构建</span></p><a class="btn primary" data-asset="ios-unsigned.ipa" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.0/ditmesh-1.0.0-ios-unsigned.ipa">.ipa</a><p class="note"><span class="en">Re-sign or sideload with your preferred tool.</span><span class="zh">请自行签名或用工具侧载。</span></p></div>
-<div class="dl source"><h3><span class="en">From source</span><span class="zh">从源码构建</span></h3><p class="req">Flutter 3.41.9 · Dart 3.11.5</p><pre class="mono">git clone --recurse-submodules \
-  https://github.com/agentx-icu/ditmesh.git
-cd ditmesh
-dart run tool/bootstrap_deps.dart
-dart pub get
-flutter run -d macos</pre><a class="alt-link" href="https://github.com/agentx-icu/ditmesh"><span class="en">Browse source</span><span class="zh">浏览源码</span></a></div>
-</div>
-<p class="muted small center"><span class="en">Older versions and every checksum:</span><span class="zh">历史版本与全部校验和：</span> <a href="https://github.com/agentx-icu/ditmesh/releases">GitHub Releases</a></p>
-</div>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">04 — download</span><span class="zh">04 — 下载</span></p>
+      <h2><span class="en">Get DitMesh for your device.</span><span class="zh">为你的设备下载 DitMesh。</span></h2>
+      <p><span class="en">Free, no account needed. Packages are built by CI from the public source and published on GitHub Releases.</span><span class="zh">免费，无需注册。安装包由 CI 从公开源码构建，发布在 GitHub Releases。</span></p>
+    </div>
+    <div class="dl-meta mono">
+      <span><span class="en">Version</span><span class="zh">版本</span> <a id="relLink" data-release-link href="https://github.com/agentx-icu/ditmesh/releases/tag/v1.0.1"><b id="relName" data-version>v1.0.1</b></a></span>
+      <span><span class="en">Released</span><span class="zh">发布于</span> <span id="relDate" data-release-date>2026-10-11</span></span>
+      <a data-release-link href="https://github.com/agentx-icu/ditmesh/releases/tag/v1.0.1" rel="noopener"><span class="en">Release notes ↗</span><span class="zh">更新说明 ↗</span></a>
+      <a href="https://github.com/agentx-icu/ditmesh/releases" rel="noopener"><span class="en">All versions ↗</span><span class="zh">历史版本 ↗</span></a>
+    </div>
+
+    <div class="dl-grid">
+      <div class="os" id="os-macos">
+        <div class="os-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8c1.3 0 2.1-1.2 2.9-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.4-.9-2.4-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><h3>macOS</h3><span class="yours"><span class="en">your system</span><span class="zh">你的系统</span></span></div>
+        <p class="req"><span class="en">macOS 13 Ventura or later · .pkg installer or .zip</span><span class="zh">macOS 13 Ventura 及以上 · .pkg 安装包或 .zip</span></p>
+        <div class="pkgs">
+          <a class="pkg" data-asset="macos-arm64.pkg" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-macos-arm64.pkg"><span class="pi"><span class="pn"><span class="en">Apple silicon</span><span class="zh">Apple 芯片</span> · .pkg</span><span class="pf">ditmesh-1.0.1-macos-arm64.pkg</span></span><span class="ps">14.2 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+          <a class="pkg" data-asset="macos-x86_64.pkg" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-macos-x86_64.pkg"><span class="pi"><span class="pn"><span class="en">Intel</span><span class="zh">Intel 芯片</span> · .pkg</span><span class="pf">ditmesh-1.0.1-macos-x86_64.pkg</span></span><span class="ps">15.4 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+        </div>
+        <p class="alts"><span class="en">Zip:</span><span class="zh">压缩包：</span> <a data-asset="macos-arm64.zip" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-macos-arm64.zip"><span class="en">Apple silicon</span><span class="zh">Apple 芯片</span></a> · <a data-asset="macos-x86_64.zip" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-macos-x86_64.zip">Intel</a></p>
+      </div>
+      <div class="os" id="os-windows">
+        <div class="os-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5l7.5-1v7H3zM11.5 4.4L21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></svg><h3>Windows</h3><span class="yours"><span class="en">your system</span><span class="zh">你的系统</span></span></div>
+        <p class="req"><span class="en">Windows 10 or later · x64</span><span class="zh">Windows 10 及以上 · x64</span></p>
+        <div class="pkgs">
+          <a class="pkg" data-asset="windows-x64.msi" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-windows-x64.msi"><span class="pi"><span class="pn"><span class="en">Installer</span><span class="zh">安装包</span> · .msi</span><span class="pf">ditmesh-1.0.1-windows-x64.msi</span></span><span class="ps">17.9 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+          <a class="pkg" data-asset="windows-x64.zip" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-windows-x64.zip"><span class="pi"><span class="pn"><span class="en">Portable</span><span class="zh">便携版</span> · .zip</span><span class="pf">ditmesh-1.0.1-windows-x64.zip</span></span><span class="ps">17.0 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+        </div>
+      </div>
+      <div class="os" id="os-linux">
+        <div class="os-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c-2.2 0-3.6 1.8-3.6 4.4 0 1.3.3 2.2-.4 3.4-.9 1.5-2.9 3.9-2.9 6.6 0 .6.1 1.2.4 1.7-.8.4-1.9.6-1.9 1.5 0 1.2 2.1 1.1 3.3 1.6.9.4 1.6.8 2.4.8.9 0 1.4-.6 1.8-1h1.8c.4.4.9 1 1.8 1 .8 0 1.5-.4 2.4-.8 1.2-.5 3.3-.4 3.3-1.6 0-.9-1.1-1.1-1.9-1.5.3-.5.4-1.1.4-1.7 0-2.7-2-5.1-2.9-6.6-.7-1.2-.4-2.1-.4-3.4C15.6 3.8 14.2 2 12 2zm-1.6 4.2c.4 0 .7.5.7 1.1 0 .6-.3 1.1-.7 1.1s-.7-.5-.7-1.1c0-.6.3-1.1.7-1.1zm3.2 0c.4 0 .7.5.7 1.1 0 .6-.3 1.1-.7 1.1s-.7-.5-.7-1.1c0-.6.3-1.1.7-1.1zM12 9.3c.9 0 2 .6 2 1 0 .5-1.1 1.2-2 1.2s-2-.7-2-1.2c0-.4 1.1-1 2-1z"/></svg><h3>Linux</h3><span class="yours"><span class="en">your system</span><span class="zh">你的系统</span></span></div>
+        <p class="req"><span class="en">x86_64 · glibc 2.38 or newer (Ubuntu 24.04, Debian 13, Fedora 39, RHEL 10 and later)</span><span class="zh">x86_64 · glibc 2.38 及以上（Ubuntu 24.04、Debian 13、Fedora 39、RHEL 10 及更新版本）</span></p>
+        <div class="pkgs">
+          <a class="pkg" data-asset="linux-x86_64.deb" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-linux-x86_64.deb"><span class="pi"><span class="pn">.deb · x86_64</span><span class="pf">ditmesh-1.0.1-linux-x86_64.deb</span></span><span class="ps">17.0 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+          <a class="pkg" data-asset="linux-x86_64.rpm" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-linux-x86_64.rpm"><span class="pi"><span class="pn">.rpm · x86_64</span><span class="pf">ditmesh-1.0.1-linux-x86_64.rpm</span></span><span class="ps">11.9 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+          <a class="pkg" data-asset="linux-x86_64.tar.gz" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-linux-x86_64.tar.gz"><span class="pi"><span class="pn">.tar.gz · x86_64</span><span class="pf">ditmesh-1.0.1-linux-x86_64.tar.gz</span></span><span class="ps">23.8 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+        </div>
+      </div>
+      <div class="os" id="os-android">
+        <div class="os-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 4.2L5.9 2.1l.6-.4 1.4 2.2A8 8 0 0 1 12 3c1.5 0 2.9.3 4.1.9l1.4-2.2.6.4-1.3 2.1C19.2 5.5 20.7 7.8 21 10.5H3c.3-2.7 1.8-5 4.2-6.3zM8.5 7.5a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8zm7 0a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8zM3 12h18v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><h3>Android</h3><span class="yours"><span class="en">your system</span><span class="zh">你的系统</span></span></div>
+        <p class="req"><span class="en">Android 7.0 or later · arm64, armv7, x86_64</span><span class="zh">Android 7.0 及以上 · arm64、armv7、x86_64</span></p>
+        <div class="pkgs">
+          <a class="pkg" data-asset="android.apk" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-android.apk"><span class="pi"><span class="pn">APK</span><span class="pf">ditmesh-1.0.1-android.apk</span></span><span class="ps">105.5 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+        </div>
+        <p class="alts"><a data-asset="android.aab" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-android.aab"><span class="en">App bundle (.aab)</span><span class="zh">App bundle（.aab）</span></a></p>
+        <p class="note"><span class="en">Signed with a debug key for sideloading and testing; not on Google Play yet.</span><span class="zh">使用 debug 密钥签名，适合侧载和测试，暂未上架 Google Play。</span></p>
+      </div>
+      <div class="os" id="os-ios">
+        <div class="os-h"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="10" y="18.2" width="4" height="1.4" rx=".7"/></svg><h3>iOS &amp; iPadOS</h3><span class="yours"><span class="en">your system</span><span class="zh">你的系统</span></span></div>
+        <p class="req"><span class="en">iOS / iPadOS 14 or later · unsigned .ipa</span><span class="zh">iOS / iPadOS 14 及以上 · 未签名 .ipa</span></p>
+        <div class="pkgs">
+          <a class="pkg" data-asset="ios-unsigned.ipa" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/ditmesh-1.0.1-ios-unsigned.ipa"><span class="pi"><span class="pn"><span class="en">Unsigned IPA</span><span class="zh">未签名 IPA</span></span><span class="pf">ditmesh-1.0.1-ios-unsigned.ipa</span></span><span class="ps">12.7 MB</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></a>
+        </div>
+        <p class="note"><span class="en">Not on the App Store yet. Re-sign it or install it with a sideloading tool, or build from source with Xcode.</span><span class="zh">暂未上架 App Store。请自行重新签名或用侧载工具安装，也可以用 Xcode 从源码构建。</span></p>
+      </div>
+      <div class="os" id="os-source">
+        <div class="os-h"><svg viewBox="0 0 24 24" aria-hidden="true" class="stroke"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><h3><span class="en">Source code</span><span class="zh">源代码</span></h3></div>
+        <p class="req">GPL-3.0 · Flutter 3.41.9 · Dart 3.11.5</p>
+        <div class="pkgs">
+          <a class="pkg" href="https://github.com/agentx-icu/ditmesh" rel="noopener"><span class="pi"><span class="pn">agentx-icu/ditmesh</span><span class="pf"><span class="en">app source on GitHub</span><span class="zh">GitHub 上的应用源码</span></span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+          <a class="pkg" href="#build"><span class="pi"><span class="pn"><span class="en">Build it yourself</span><span class="zh">自行构建</span></span><span class="pf"><span class="en">clone, bootstrap, run</span><span class="zh">克隆、准备依赖、运行</span></span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <details class="verify">
+      <summary><span class="en">Verify your download (SHA-256)</span><span class="zh">校验下载文件（SHA-256）</span></summary>
+      <div class="vb">
+        <p><span class="en">Each release ships a</span><span class="zh">每个版本都附带</span> <a id="sumsLink" href="https://github.com/agentx-icu/ditmesh/releases/download/v1.0.1/SHA256SUMS">SHA256SUMS</a><span class="en">. Compare it with the hash of the file you downloaded: <code>shasum -a 256 &lt;file&gt;</code> on macOS, <code>sha256sum &lt;file&gt;</code> on Linux, <code>Get-FileHash &lt;file&gt;</code> in PowerShell.</span><span class="zh">。将它与你下载文件的哈希比对：macOS 用 <code>shasum -a 256 &lt;文件&gt;</code>，Linux 用 <code>sha256sum &lt;文件&gt;</code>，PowerShell 用 <code>Get-FileHash &lt;文件&gt;</code>。</span></p>
+        <div class="sums mono" id="sums" tabindex="0"></div>
+      </div>
+    </details>
+  </div>
 </section>
 
-<section id="faq" class="sec alt">
-<div class="wrap narrow">
-<h2 class="sec-h">FAQ</h2>
-<details><summary><span class="en">Do I need an account?</span><span class="zh">需要注册账号吗？</span></summary><p><span class="en">No. A Tox identity is generated on your device. Back it up from Me because there is no central account provider to recover it.</span><span class="zh">不需要。Tox 身份在设备本地生成。请在“我的”中备份，因为没有中心账号服务可以帮你恢复。</span></p></details>
-<details><summary><span class="en">Can I message someone who is offline?</span><span class="zh">对方离线时能发消息吗？</span></summary><p><span class="en">The message stays in the local send queue and continues when both peers are running and reachable. Keep DitMesh running to receive messages.</span><span class="zh">消息会留在本地待发送队列，双方运行且网络可达时继续发送。请保持 DitMesh 运行以接收消息。</span></p></details>
-<details><summary><span class="en">Is my message stored on a server?</span><span class="zh">消息会存储在服务器上吗？</span></summary><p><span class="en">No messaging or push server is involved. Tox carries encrypted data peer to peer; history and backups stay on your devices.</span><span class="zh">不会。没有聊天或推送服务器，Tox 点对点传输加密数据；历史记录和备份保留在你的设备上。</span></p></details>
-<details><summary><span class="en">What is the relationship with MorseCQ?</span><span class="zh">DitMesh 与 MorseCQ 有什么关系？</span></summary><p><span class="en">DitMesh is the live messenger. For offline courses, structured training and statistics, use <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>.</span><span class="zh">DitMesh 是实时聊天工具。离线课程、系统训练与统计功能请使用 <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>。</span></p></details>
-</div>
+<!-- ====================================================== install -->
+<section id="install" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">05 — install &amp; first contact</span><span class="zh">05 — 安装与首次通联</span></p>
+      <h2><span class="en">On the air in a few minutes.</span><span class="zh">几分钟就能开始通联。</span></h2>
+    </div>
+    <div class="guide">
+      <div class="tabs" role="tablist" id="guideTabs" aria-label="Install guide">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="i-macos" id="it-macos" data-key="macos" type="button">macOS</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="i-windows" id="it-windows" data-key="windows" tabindex="-1" type="button">Windows</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="i-linux" id="it-linux" data-key="linux" tabindex="-1" type="button">Linux</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="i-android" id="it-android" data-key="android" tabindex="-1" type="button">Android</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="i-ios" id="it-ios" data-key="ios" tabindex="-1" type="button">iOS</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="i-first" id="it-first" data-key="first" tabindex="-1" type="button"><span class="en">First contact</span><span class="zh">首次通联</span></button>
+      </div>
+
+      <div class="panel" id="i-macos" role="tabpanel" tabindex="0" aria-labelledby="it-macos">
+        <ol class="steps">
+          <li><span class="en">Pick the package for your Mac: <b>Apple silicon</b> for M-series Macs, <b>Intel</b> for older ones. Not sure? Apple menu → About This Mac → <i>Chip</i>.</span><span class="zh">选择对应的安装包：M 系列 Mac 选 <b>Apple 芯片</b>，较早的选 <b>Intel</b>。不确定的话：苹果菜单 → 关于本机 → 查看<i>芯片</i>一项。</span></li>
+          <li><span class="en">Open the <b>.pkg</b> and follow the installer. The package is not notarized yet, so if macOS refuses to open it, go to <b>System Settings → Privacy &amp; Security</b> and click <b>Open Anyway</b>.</span><span class="zh">打开 <b>.pkg</b> 按提示安装。安装包尚未经过公证，如果 macOS 拒绝打开，请前往<b>系统设置 → 隐私与安全性</b>点击<b>仍要打开</b>。</span></li>
+          <li><span class="en">On macOS 15 or later, allow <b>local network</b> access when asked if you plan to use LAN nodes.</span><span class="zh">在 macOS 15 及以上，若要使用局域网节点，请在系统询问时允许<b>本地网络</b>访问。</span></li>
+        </ol>
+        <div class="term"><i># Apple silicon: install from Terminal</i>
+<b>sudo installer</b> -pkg ~/Downloads/<span data-file="macos-arm64.pkg">ditmesh-1.0.1-macos-arm64.pkg</span> -target /</div>
+      </div>
+
+      <div class="panel" id="i-windows" role="tabpanel" tabindex="0" aria-labelledby="it-windows" hidden>
+        <ol class="steps">
+          <li><span class="en">Download the <b>.msi</b> installer, or the <b>.zip</b> if you prefer a portable folder.</span><span class="zh">下载 <b>.msi</b> 安装包；想要免安装版本则下载 <b>.zip</b>。</span></li>
+          <li><span class="en">Run the installer. If SmartScreen shows “Windows protected your PC”, click <b>More info → Run anyway</b>.</span><span class="zh">运行安装包。若 SmartScreen 提示“Windows 已保护你的电脑”，点击<b>更多信息 → 仍要运行</b>。</span></li>
+          <li><span class="en">Start <b>DitMesh</b> from the Start menu and allow network access if the firewall asks; Tox needs it to reach your contacts directly.</span><span class="zh">从开始菜单启动 <b>DitMesh</b>。如果防火墙询问，请允许网络访问——Tox 需要它与联系人直连。</span></li>
+        </ol>
+        <div class="term"><i># optional: silent install from PowerShell</i>
+<b>msiexec</b> /i <span data-file="windows-x64.msi">ditmesh-1.0.1-windows-x64.msi</span> /qn</div>
+      </div>
+
+      <div class="panel" id="i-linux" role="tabpanel" tabindex="0" aria-labelledby="it-linux" hidden>
+        <ol class="steps">
+          <li><span class="en">Choose <b>.deb</b> for Debian and Ubuntu, <b>.rpm</b> for Fedora and RHEL, or the <b>.tar.gz</b> for other distributions. The build needs <b>glibc 2.38</b> or newer, so Ubuntu 22.04, Debian 12 and RHEL 9 are too old.</span><span class="zh">Debian、Ubuntu 选 <b>.deb</b>；Fedora、RHEL 选 <b>.rpm</b>；其他发行版用 <b>.tar.gz</b>。安装包需要 <b>glibc 2.38</b> 及以上，Ubuntu 22.04、Debian 12、RHEL 9 版本过旧。</span></li>
+          <li><span class="en">Install with your package manager so dependencies are pulled in, or unpack the archive and run the binary:</span><span class="zh">用包管理器安装以自动处理依赖，或解压压缩包后直接运行：</span></li>
+        </ol>
+        <div class="term"><i># Debian / Ubuntu</i>
+<b>sudo apt install</b> ./<span data-file="linux-x86_64.deb">ditmesh-1.0.1-linux-x86_64.deb</span>
+
+<i># Fedora / RHEL 10</i>
+<b>sudo dnf install</b> ./<span data-file="linux-x86_64.rpm">ditmesh-1.0.1-linux-x86_64.rpm</span>
+
+<i># other distributions (glibc 2.38+)</i>
+<b>tar</b> xzf <span data-file="linux-x86_64.tar.gz">ditmesh-1.0.1-linux-x86_64.tar.gz</span> &amp;&amp; ./ditmesh/ditmesh</div>
+      </div>
+
+      <div class="panel" id="i-android" role="tabpanel" tabindex="0" aria-labelledby="it-android" hidden>
+        <ol class="steps">
+          <li><span class="en">Download the <b>APK</b> on your phone, or transfer it from your computer.</span><span class="zh">在手机上下载 <b>APK</b>，或从电脑传到手机。</span></li>
+          <li><span class="en">Open it. If Android asks, allow your browser or file manager to <b>install unknown apps</b>.</span><span class="zh">打开它。若系统提示，允许浏览器或文件管理器<b>安装未知应用</b>。</span></li>
+          <li><span class="en">Allow <b>notifications</b>, and keep DitMesh running to receive messages; there is no push server to wake it.</span><span class="zh">允许<b>通知</b>，并保持 DitMesh 运行以接收消息——没有推送服务器来唤醒它。</span></li>
+        </ol>
+        <div class="term"><i># or sideload with adb</i>
+<b>adb install</b> <span data-file="android.apk">ditmesh-1.0.1-android.apk</span></div>
+      </div>
+
+      <div class="panel" id="i-ios" role="tabpanel" tabindex="0" aria-labelledby="it-ios" hidden>
+        <ol class="steps">
+          <li><span class="en">Download the <b>unsigned .ipa</b>. iOS only installs signed apps, so it has to be signed for your device first.</span><span class="zh">下载<b>未签名 .ipa</b>。iOS 只安装已签名的应用，需要先为你的设备签名。</span></li>
+          <li><span class="en">Sign and install it with a sideloading tool and your Apple ID, or re-sign it with your own development certificate.</span><span class="zh">用侧载工具配合你的 Apple ID 签名安装，或用你自己的开发证书重新签名。</span></li>
+          <li><span class="en">Alternatively, <a href="#build">build from source</a> and run it on your device from Xcode.</span><span class="zh">也可以<a href="#build">从源码构建</a>，通过 Xcode 安装到设备。</span></li>
+        </ol>
+      </div>
+
+      <div class="panel" id="i-first" role="tabpanel" tabindex="0" aria-labelledby="it-first" hidden>
+        <ol class="steps">
+          <li><span class="en"><b>Create an identity.</b> Pick a display name and, ideally, a password. Your identity is generated on this device; nothing is registered anywhere.</span><span class="zh"><b>创建身份。</b>填写显示名称，建议同时设置密码。身份在本机生成，不会注册到任何地方。</span></li>
+          <li><span class="en"><b>Back it up straight away.</b> The backup wizard saves an encrypted file. Nobody can recover an identity for you.</span><span class="zh"><b>立即备份。</b>备份向导会保存一个加密文件。没有人能替你找回身份。</span></li>
+          <li><span class="en"><b>Key to yourself first.</b> The first-conversation guide opens note-to-self so you can try keying and listening.</span><span class="zh"><b>先发给自己。</b>首次对话引导会打开“发给自己”，让你试着拍发和收听。</span></li>
+          <li><span class="en"><b>Add a contact.</b> Share your Tox ID or QR code from <b>Me</b>, or add theirs. You can chat once they accept.</span><span class="zh"><b>添加联系人。</b>在<b>我的</b>中分享你的 Tox ID 或二维码，或添加对方的。对方通过后即可聊天。</span></li>
+          <li><span class="en"><b>Call CQ.</b> Key a message, preview it, and send. Both of you need DitMesh running and reachable for delivery.</span><span class="zh"><b>呼叫 CQ。</b>拍发、预览、发送。双方都需要运行 DitMesh 且网络可达，消息才能送达。</span></li>
+        </ol>
+        <div class="callout"><b><span class="en">Learning Morse?</span><span class="zh">还在学电码？</span></b> <span class="en">DitMesh is the live messenger. For courses, structured training and statistics, use <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>.</span><span class="zh">DitMesh 是实时聊天工具。课程、系统训练和统计请使用 <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>。</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== build -->
+<section id="build" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">06 — under the hood</span><span class="zh">06 — 技术架构</span></p>
+      <h2><span class="en">Yours to build, audit and own.</span><span class="zh">可构建、可审计、真正属于你。</span></h2>
+      <p><span class="en">DitMesh is a Flutter app. Tim2Tox bridges it to c-toxcore, so the same Dart code talks to the Tox network on all five platforms.</span><span class="zh">DitMesh 是一个 Flutter 应用，Tim2Tox 把它接到 c-toxcore 上，同一套 Dart 代码在五个平台上连接 Tox 网络。</span></p>
+    </div>
+    <div class="arch">
+      <div><b>DitMesh</b><span class="en">keying, playback, chat, groups, reference, identity and network settings</span><span class="zh">拍发、播放、聊天、群组、参考、身份与网络设置</span></div>
+      <div><b>morse_io</b><span class="en">Morse timing, decoding and audio, haptic and flash output</span><span class="zh">摩尔斯时序、解码，以及声音、振动、闪光输出</span></div>
+      <div><b>Tim2Tox</b><span class="en">C++ core and FFI bridge onto Tox</span><span class="zh">C++ 核心与连接 Tox 的 FFI 桥接层</span></div>
+      <div><b>c-toxcore</b><span class="en">the Tox protocol: DHT, encryption, groups</span><span class="zh">Tox 协议本体：DHT、加密、群组</span></div>
+    </div>
+    <div class="term build"><i># Flutter 3.41.9 / Dart 3.11.5</i>
+<b>git clone</b> --recurse-submodules https://github.com/agentx-icu/ditmesh.git
+<b>cd</b> ditmesh
+<b>dart run</b> tool/bootstrap_deps.dart
+<b>dart pub get</b>
+<b>bash</b> tool/ci/build_tim2tox.sh --target macos-arm64
+<b>cd</b> apps/ditmesh
+<b>flutter run</b> -d macos</div>
+    <p class="more"><span class="en">Per-platform build and packaging notes are in the <a href="https://github.com/agentx-icu/ditmesh/blob/master/doc/operations/BUILD_AND_DEPLOY.md" rel="noopener">documentation</a>.</span><span class="zh">各平台的构建与打包说明见<a href="https://github.com/agentx-icu/ditmesh/blob/master/doc/operations/BUILD_AND_DEPLOY.md" rel="noopener">项目文档</a>。</span></p>
+  </div>
+</section>
+
+<!-- ====================================================== faq -->
+<section id="faq" class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="en">07 — faq</span><span class="zh">07 — 常见问题</span></p>
+      <h2><span class="en">Questions, answered.</span><span class="zh">你可能想问。</span></h2>
+    </div>
+    <div class="faq">
+      <details><summary><span class="en">Do I need an account?</span><span class="zh">需要注册账号吗？</span></summary><div class="a"><p><span class="en">No. A Tox identity is generated on your device. Back it up from <b>Me</b>, because there is no central account provider to recover it.</span><span class="zh">不需要。Tox 身份在设备本地生成。请在<b>我的</b>中备份，因为没有中心账号服务可以帮你恢复。</span></p></div></details>
+      <details><summary><span class="en">Do I have to know Morse code already?</span><span class="zh">必须先会摩尔斯电码吗？</span></summary><div class="a"><p><span class="en">It helps, but the built-in reference, translator and Morse preview let you look up and check every character before sending. For structured learning, start with <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>.</span><span class="zh">会更好，但内置的参考、翻译器和电码预览能让你在发送前查阅并核对每个字符。想系统学习，请从 <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a> 开始。</span></p></div></details>
+      <details><summary><span class="en">Can I message someone who is offline?</span><span class="zh">对方离线时能发消息吗？</span></summary><div class="a"><p><span class="en">The message waits in the local send queue and goes out when both of you are running and reachable. There is no mailbox in the cloud, so keep DitMesh running to receive messages. You can cancel a queued send or retry a failed one at any time.</span><span class="zh">消息会留在本地待发送队列，双方都运行且网络可达时自动发出。云端没有“信箱”，请保持 DitMesh 运行以接收消息。排队中的消息可以取消，失败的可以重试。</span></p></div></details>
+      <details><summary><span class="en">Is my message stored on a server? Who can see what?</span><span class="zh">消息会存在服务器上吗？谁能看到什么？</span></summary><div class="a"><p><span class="en">No messaging or push server is involved. Tox carries encrypted data peer to peer; history and backups stay on your devices. Bootstrap nodes only help peers find each other. Like any direct peer-to-peer connection, Tox does not hide your IP address from your contacts. See the <a href="https://github.com/agentx-icu/ditmesh/blob/master/site/privacy.md">privacy policy</a>.</span><span class="zh">没有任何聊天或推送服务器。Tox 点对点传输加密数据，历史记录和备份保留在你的设备上；引导节点只帮助双方互相找到。和所有点对点直连一样，Tox 不会对联系人隐藏你的 IP 地址。详见<a href="https://github.com/agentx-icu/ditmesh/blob/master/site/privacy.md">隐私政策</a>。</span></p></div></details>
+      <details><summary><span class="en">Can I talk to toxee or other Tox clients?</span><span class="zh">能和 toxee 或其他 Tox 客户端聊天吗？</span></summary><div class="a"><p><span class="en">Yes. DitMesh speaks the standard Tox protocol, so <a href="https://toxee.agentx.icu">toxee</a> and other clients receive your messages as ordinary text. Original keying rhythm is exchanged only between DitMesh clients; for other messages, playback uses your own speed.</span><span class="zh">可以。DitMesh 使用标准 Tox 协议，<a href="https://toxee.agentx.icu">toxee</a> 等客户端会以普通文字收到你的消息。原始拍发节奏只在 DitMesh 客户端之间传递；其他消息按你自己设定的速度播放。</span></p></div></details>
+      <details><summary><span class="en">Why is the Android build debug-signed and the iOS build unsigned?</span><span class="zh">为什么 Android 版是 debug 签名、iOS 版未签名？</span></summary><div class="a"><p><span class="en">No store release keys are configured yet. The Android packages suit sideloading and testing, not Google Play; the iOS package must be re-signed or sideloaded. Verify any download against <code>SHA256SUMS</code>.</span><span class="zh">目前尚未配置应用商店发布密钥。Android 安装包适合侧载和测试，不用于 Google Play；iOS 安装包需要重新签名或侧载。下载后可用 <code>SHA256SUMS</code> 校验。</span></p></div></details>
+      <details><summary><span class="en">What is the relationship with MorseCQ?</span><span class="zh">DitMesh 与 MorseCQ 有什么关系？</span></summary><div class="a"><p><span class="en">DitMesh is the live messenger. For offline courses, structured training and statistics, use <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>. The two apps keep independent data.</span><span class="zh">DitMesh 是实时聊天工具。离线课程、系统训练与统计功能请使用 <a href="https://github.com/agentx-icu/morsecq">MorseCQ</a>。两个应用的数据相互独立。</span></p></div></details>
+      <details><summary><span class="en">Who makes DitMesh, and what does it cost?</span><span class="zh">DitMesh 由谁开发？收费吗？</span></summary><div class="a"><p><span class="en">DitMesh is developed in the open by agentx-icu under GPL-3.0. It is free, with no ads, analytics or tracking code.</span><span class="zh">DitMesh 由 agentx-icu 以 GPL-3.0 公开开发。完全免费，没有广告、统计分析或追踪代码。</span></p></div></details>
+    </div>
+  </div>
 </section>
 </main>
 
-<footer class="foot"><div class="wrap foot-in"><div class="brand"><span class="brand-mark">·−</span><span>DitMesh</span><span class="mono muted">− · − ·</span></div><nav><a href="https://github.com/agentx-icu/ditmesh">GitHub</a><a href="https://github.com/agentx-icu/ditmesh/releases"><span class="en">Releases</span><span class="zh">版本发布</span></a><a href="https://github.com/agentx-icu/ditmesh/issues"><span class="en">Report an issue</span><span class="zh">反馈问题</span></a><a href="https://tox.chat">Tox</a></nav><p class="muted small">© <span class="en">DitMesh contributors</span><span class="zh">DitMesh 贡献者</span> · GPL-3.0</p></div></footer>
+<!-- ====================================================== footer -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top"><img src="assets/img/app_icon.png" alt="" width="30" height="30"><span>DitMesh</span></a>
+        <p class="blurb"><span class="en">A serverless Morse messenger for the Tox peer-to-peer network.</span><span class="zh">基于 Tox 点对点网络的无服务器摩尔斯聊天工具。</span></p>
+        <p class="mono sig" aria-hidden="true">−−··· &nbsp;···−−</p>
+      </div>
+      <div>
+        <h4><span class="en">Product</span><span class="zh">产品</span></h4>
+        <ul>
+          <li><a href="#features"><span class="en">Features</span><span class="zh">功能</span></a></li>
+          <li><a href="#download"><span class="en">Download</span><span class="zh">下载</span></a></li>
+          <li><a href="#install"><span class="en">Install guide</span><span class="zh">安装指南</span></a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span class="en">Project</span><span class="zh">项目</span></h4>
+        <ul>
+          <li><a href="https://github.com/agentx-icu/ditmesh" rel="noopener">GitHub</a></li>
+          <li><a href="https://github.com/agentx-icu/ditmesh/releases" rel="noopener"><span class="en">Releases</span><span class="zh">版本发布</span></a></li>
+          <li><a href="https://github.com/agentx-icu/ditmesh/issues" rel="noopener"><span class="en">Report an issue</span><span class="zh">反馈问题</span></a></li>
+          <li><a href="https://github.com/agentx-icu/ditmesh/blob/master/site/privacy.md" rel="noopener"><span class="en">Privacy</span><span class="zh">隐私政策</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span class="en">Related</span><span class="zh">相关</span></h4>
+        <ul>
+          <li><a href="https://github.com/agentx-icu/morsecq" rel="noopener">MorseCQ</a></li>
+          <li><a href="https://toxee.agentx.icu" rel="noopener">toxee</a></li>
+          <li><a href="https://tox.chat" rel="noopener">tox.chat</a></li>
+          <li><a href="https://github.com/agentx-icu/tim2tox" rel="noopener">Tim2Tox</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 <span class="en">DitMesh contributors</span><span class="zh">DitMesh 贡献者</span> · GPL-3.0</span>
+      <span class="sp"></span>
+      <span><a href="en/" hreflang="en" lang="en">English</a> · <a href="zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></span>
+      <span class="en">No cookies, no trackers on this page.</span><span class="zh">本页面无 Cookie、无追踪。</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" role="status" aria-live="polite"></div>
 <script src="assets/main.js" defer></script>
 </body>
 </html>
