@@ -43,3 +43,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var
   .signal-card{width:100%;max-width:100%}
   .signal-morse{white-space:normal;overflow-wrap:anywhere}
 }
+
+/* Keep rotated hero artwork and Morse line inside its grid cell */
+.hero-art{overflow:hidden}
+.signal-card{overflow:hidden}
+.signal-morse{white-space:normal;overflow-wrap:anywhere}
