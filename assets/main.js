@@ -71,6 +71,89 @@
     applyLang(next);
   });
 
+  /* ---------------- mobile menu ---------------- */
+
+  // Below 1060px the section links fold into a menu button.
+  const nav = $('.nav');
+  const menuBtn = document.getElementById('menuBtn');
+  if (nav && menuBtn) {
+    const setMenu = open => {
+      nav.classList.toggle('open', open);
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    menuBtn.hidden = false;
+    menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+    $$('#navLinks a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('click', e => { if (!nav.contains(e.target)) setMenu(false); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && nav.classList.contains('open')) { setMenu(false); menuBtn.focus(); }
+    });
+    matchMedia('(min-width: 1061px)').addEventListener('change', () => setMenu(false));
+  }
+
+  /* ---------------- screenshot viewer ---------------- */
+
+  // Screenshots open full size in a <dialog>; arrows and swipes step through
+  // the group (one gallery pane or one feature figure) the image belongs to.
+  const shots = $$('.gallery img, .duo img, .phone-duo img');
+  if (shots.length && window.HTMLDialogElement) {
+    const box = document.createElement('dialog');
+    box.className = 'lightbox';
+    box.innerHTML = '<figure><img alt=""><figcaption></figcaption></figure>' +
+      '<button type="button" class="lb-btn lb-close">×</button>' +
+      '<button type="button" class="lb-btn lb-prev">‹</button><button type="button" class="lb-btn lb-next">›</button>';
+    document.body.appendChild(box);
+    const boxImg = $('img', box);
+    const boxCap = $('figcaption', box);
+    let group = [];
+    let at = 0;
+    // The caption is the image's alt text, or else its figure's visible caption.
+    const caption = img => {
+      const cap = img.closest('figure') && $('figcaption', img.closest('figure'));
+      return img.alt || (cap ? cap.innerText.trim() : '');
+    };
+    const show = i => {
+      at = (i + group.length) % group.length;
+      boxImg.src = group[at].currentSrc || group[at].src;
+      boxImg.alt = caption(group[at]);
+      boxCap.textContent = boxImg.alt;
+      box.classList.toggle('single', group.length < 2);
+    };
+    const step = d => { if (group.length > 1) show(at + d); };
+    shots.forEach(img => {
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+      const open = () => {
+        group = $$('img', img.closest('.gallery, .duo, .phone-duo'));
+        show(group.indexOf(img));
+        $('.lb-close', box).setAttribute('aria-label', t('Close', '关闭'));
+        $('.lb-prev', box).setAttribute('aria-label', t('Previous', '上一张'));
+        $('.lb-next', box).setAttribute('aria-label', t('Next', '下一张'));
+        box.showModal();
+      };
+      img.addEventListener('click', open);
+      img.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    });
+    $('.lb-close', box).addEventListener('click', () => box.close());
+    $('.lb-prev', box).addEventListener('click', () => step(-1));
+    $('.lb-next', box).addEventListener('click', () => step(1));
+    box.addEventListener('click', e => { if (e.target === box || e.target.tagName === 'FIGURE') box.close(); });
+    box.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') step(1);
+      else if (e.key === 'ArrowLeft') step(-1);
+    });
+    let x0 = null;
+    box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
+    });
+  }
+
   /* ---------------- tabs ---------------- */
 
   $$('[role=tablist]').forEach(list => {
