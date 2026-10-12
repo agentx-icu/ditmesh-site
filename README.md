@@ -25,6 +25,7 @@ laid out like [toxee-site](https://github.com/agentx-icu/toxee-site):
 | `assets/img/{en,zh}/{desktop,ios,ipad,android}/` | WebP copies of the real UI captures in `ditmesh/doc/screenshots` (desktop = macOS). |
 | `assets/img/{en,zh}/og.jpg` | Social preview image per language. |
 | `CNAME`, `.nojekyll` | GitHub Pages custom domain and raw static serving. |
+| `sitemap.xml`, `robots.txt` | Search-engine sitemap (`/`, `/en/`, `/zh/` with hreflang alternates) and the robots file pointing at it. Update both if pages are added. |
 | `.github/workflows/pages.yml` | Deploys the repository root with GitHub Pages. |
 
 ## Release links
