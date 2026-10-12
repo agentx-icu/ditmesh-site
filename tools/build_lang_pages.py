@@ -25,6 +25,7 @@ LANGS = {
         "og_description": "基于 Tox 点对点网络的无服务器摩尔斯电码聊天工具。无需手机号，没有账号服务器，也没有文字模式。",
         "description": "DitMesh 是基于 Tox 点对点网络的免费开源、无服务器摩尔斯电码聊天工具。用直键或双桨在单聊和群组网络中拍发，支持 Android、iOS、macOS、Linux 与 Windows。",
         "og_locale": "zh_CN",
+        "ld_description": "基于 Tox 点对点网络的免费开源、无服务器摩尔斯电码聊天工具。用直键或双桨在单聊和群组网络中拍发。",
     },
 }
 
@@ -55,6 +56,12 @@ def build(src, lang, cfg):
     out = replace_once(out, f'<link rel="canonical" href="{SITE}">', f'<link rel="canonical" href="{SITE}{lang}/">')
     out = replace_once(out, f'<meta property="og:url" content="{SITE}">', f'<meta property="og:url" content="{SITE}{lang}/">')
     out = replace_once(out, f'content="{SITE}assets/img/en/og.jpg"', f'content="{SITE}assets/img/{lang}/og.jpg"')
+    # Structured data: this page's URL, language and screenshot.
+    out = replace_once(out, f'"url": "{SITE}"', f'"url": "{SITE}{lang}/"')
+    out = replace_once(out, '"inLanguage": "en"', f'"inLanguage": "{cfg["html_lang"]}"')
+    out = replace_once(out, f'"screenshot": "{SITE}assets/img/en/og.jpg"', f'"screenshot": "{SITE}assets/img/{lang}/og.jpg"')
+    if cfg.get("ld_description"):
+        out = re.sub(r'("description": ")[^"]*(")', lambda m: m[1] + cfg["ld_description"] + m[2], out, count=1)
     # Relative URLs move one directory down.
     for attr in ("href", "src"):
         out = out.replace(f'{attr}="assets/', f'{attr}="../assets/')

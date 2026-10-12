@@ -18,15 +18,18 @@ laid out like [toxee-site](https://github.com/agentx-icu/toxee-site):
 | --- | --- |
 | `index.html` | The single source page. Every text node exists in both languages as `<span class="en">` / `<span class="zh">`; `html[data-lang]` picks one. |
 | `en/index.html`, `zh/index.html` | **Generated** language-pinned copies. Never edit by hand; run `python3 tools/build_lang_pages.py` after every change to `index.html`. |
-| `tools/build_lang_pages.py` | The generator for the two pages above. |
+| `tools/build_lang_pages.py` | The generator for the two pages above; it also localizes the `SoftwareApplication` JSON-LD block. |
+| `tools/check_release.py` | Fails when the checked-in release info (links, file names, sizes and dates in `index.html`, the `FALLBACK` block in `assets/main.js`, the JSON-LD `softwareVersion`) no longer matches the latest release. |
+| `404.html` | Bilingual not-found page with absolute links (GitHub Pages serves it for any missing path). |
 | `assets/style.css` | Styles. Light theme follows the app's teal and brass; dark mode follows `prefers-color-scheme`. |
-| `assets/main.js` | Language toggle, tabs, copy buttons, OS detection, the Morse tape and the release resolver. |
+| `assets/main.js` | Language toggle, the phone menu, the full-size screenshot viewer, tabs, copy buttons, OS detection, the Morse tape and the release resolver. |
 | `assets/img/app_icon.png`, `favicon.png` | The app icon (from `apps/ditmesh/macos/Runner/Assets.xcassets`). |
 | `assets/img/{en,zh}/{desktop,ios,ipad,android}/` | WebP copies of the real UI captures in `ditmesh/doc/screenshots` (desktop = macOS). |
 | `assets/img/{en,zh}/og.jpg` | Social preview image per language. |
 | `CNAME`, `.nojekyll` | GitHub Pages custom domain and raw static serving. |
 | `sitemap.xml`, `robots.txt` | Search-engine sitemap (`/`, `/en/`, `/zh/` with hreflang alternates) and the robots file pointing at it. Update both if pages are added. |
 | `.github/workflows/pages.yml` | Deploys the repository root with GitHub Pages. |
+| `.github/workflows/check.yml` | On pushes, pull requests and daily: fails if `en/` / `zh/` were not regenerated, or if `tools/check_release.py` finds stale release info. |
 
 ## Release links
 
@@ -45,7 +48,9 @@ keeps the version heading and every active download link on the same release.
 When JavaScript or the GitHub API is unavailable, the static links in `index.html` and
 the `FALLBACK` block at the top of `assets/main.js` are used. **After each DitMesh
 release, update `FALLBACK` (names, sizes, SHA-256) and the hard-coded `1.0.1` links in
-`index.html`, then regenerate `en/` and `zh/`.**
+`index.html` (and the JSON-LD `softwareVersion`), then regenerate `en/` and `zh/`.**
+`python3 tools/check_release.py` lists anything still out of date; the `check`
+workflow runs it every day.
 
 ## Screenshots
 
