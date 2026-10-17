@@ -19,6 +19,7 @@ laid out like [toxee-site](https://github.com/agentx-icu/toxee-site):
 | `index.html` | The single source page. Every text node exists in both languages as `<span class="en">` / `<span class="zh">`; `html[data-lang]` picks one. |
 | `en/index.html`, `zh/index.html` | **Generated** language-pinned copies. Never edit by hand; run `python3 tools/build_lang_pages.py` after every change to `index.html`. |
 | `tools/build_lang_pages.py` | The generator for the two pages above; it also localizes the `SoftwareApplication` JSON-LD block. |
+| `tools/check_site.py` | Fails when `index.html` or `404.html` reference a missing local file or `#anchor`, when an English string has no Chinese counterpart, when a screenshot is missing for one language, when the JSON-LD is invalid, or when `sitemap.xml` does not list `/`, `/en/` and `/zh/`. |
 | `tools/check_release.py` | Fails when the checked-in release info (links, file names, sizes and dates in `index.html`, the `FALLBACK` block in `assets/main.js`, the JSON-LD `softwareVersion`) no longer matches the latest release. |
 | `404.html` | Bilingual not-found page with absolute links (GitHub Pages serves it for any missing path). |
 | `assets/style.css` | Styles. Light theme follows the app's teal and brass; dark mode follows `prefers-color-scheme`. |
@@ -29,7 +30,7 @@ laid out like [toxee-site](https://github.com/agentx-icu/toxee-site):
 | `CNAME`, `.nojekyll` | GitHub Pages custom domain and raw static serving. |
 | `sitemap.xml`, `robots.txt` | Search-engine sitemap (`/`, `/en/`, `/zh/` with hreflang alternates) and the robots file pointing at it. Update both if pages are added. |
 | `.github/workflows/pages.yml` | Deploys the repository root with GitHub Pages. |
-| `.github/workflows/check.yml` | On pushes, pull requests and daily: fails if `en/` / `zh/` were not regenerated, or if `tools/check_release.py` finds stale release info. |
+| `.github/workflows/check.yml` | On pushes, pull requests and daily: fails if `en/` / `zh/` were not regenerated, if `tools/check_site.py` finds a broken link or translation, or if `tools/check_release.py` finds stale release info. |
 
 ## Release links
 
