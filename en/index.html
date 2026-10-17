@@ -19,6 +19,8 @@
 <meta property="og:title" content="DitMesh — Chat in Morse code">
 <meta property="og:description" content="A serverless Morse messenger over the Tox peer-to-peer network. No phone number, no account server, no text mode.">
 <meta property="og:image" content="https://ditmesh.agentx.icu/assets/img/en/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
@@ -106,7 +108,7 @@
     <div class="hero-shot">
       <div class="frame desk">
         <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b>DitMesh</b></div>
-        <img data-shot="desktop/conversation.webp" src="../assets/img/en/desktop/conversation.webp" width="1280" height="800"
+        <img data-shot="desktop/conversation.webp" src="../assets/img/en/desktop/conversation.webp" width="1280" height="800" fetchpriority="high"
              data-alt-en="DitMesh on macOS: a Morse conversation with decoded text under each message and the straight-key pad"
              data-alt-zh="DitMesh macOS 版：每条消息下方显示译文的摩尔斯对话，以及直键拍发区"
              alt="DitMesh on macOS: a Morse conversation with decoded text under each message and the straight-key pad">
@@ -141,19 +143,19 @@
     <div class="grid3">
       <div class="card">
         <span class="tag mono">· − · ·</span>
-        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="14" width="18" height="5" rx="1.5"/><path d="M7 14l3-6h7"/><circle cx="17" cy="8" r="1.8"/></svg></div>
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="14" width="18" height="5" rx="1.5"/><path d="M7 14l3-6h7"/><circle cx="17" cy="8" r="1.8"/></svg></div>
         <h3><span class="en">Morse-only by design</span><span class="zh">只用电码，是设计初衷</span></h3>
         <p><span class="en">Key, preview, pre-listen and correct. The decoded draft is read-only, so the code you send is the code you keyed. There is no ordinary text-chat mode.</span><span class="zh">拍发、预览、试听、纠错。解码后的草稿只读，你发出去的就是你拍下的电码。不提供普通文字聊天模式。</span></p>
       </div>
       <div class="card">
         <span class="tag mono">TOX</span>
-        <div class="ic"><svg viewBox="0 0 24 24"><circle cx="5" cy="7" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M7 8l4 9M17.2 7.4L13.4 17M7.2 7h9.6"/></svg></div>
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="7" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M7 8l4 9M17.2 7.4L13.4 17M7.2 7h9.6"/></svg></div>
         <h3><span class="en">No server in the middle</span><span class="zh">中间没有服务器</span></h3>
         <p><span class="en">Messages travel end-to-end encrypted over Tox. There is no messaging or push server, and no developer server stores undelivered messages.</span><span class="zh">消息经 Tox 端到端加密传输。没有聊天或推送服务器，也没有开发者服务器替你保存未送达的消息。</span></p>
       </div>
       <div class="card">
         <span class="tag mono">ID</span>
-        <div class="ic"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.6"/></svg></div>
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.6"/></svg></div>
         <h3><span class="en">An identity that lives on your device</span><span class="zh">身份只在你的设备上</span></h3>
         <p><span class="en">Your Tox identity is generated locally and can be protected with a password. Share it as a Tox ID or QR code; back it up with an encrypted export.</span><span class="zh">Tox 身份在本地生成，可用密码保护。以 Tox ID 或二维码分享，用加密导出做备份。</span></p>
       </div>

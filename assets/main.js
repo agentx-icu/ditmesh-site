@@ -120,9 +120,16 @@
       box.classList.toggle('single', group.length < 2);
     };
     const step = d => { if (group.length > 1) show(at + d); };
-    shots.forEach(img => {
+    shots.forEach((img, n) => {
       img.tabIndex = 0;
       img.setAttribute('role', 'button');
+      // Gallery images have an empty alt, so name the button after the figure caption.
+      const fig = img.closest('figure');
+      const cap = fig && $('figcaption', fig);
+      if (!img.alt && cap) {
+        if (!cap.id) cap.id = 'shot-cap-' + n;
+        img.setAttribute('aria-labelledby', cap.id);
+      }
       const open = () => {
         group = $$('img', img.closest('.gallery, .duo, .phone-duo'));
         show(group.indexOf(img));
