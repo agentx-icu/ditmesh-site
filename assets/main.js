@@ -9,27 +9,27 @@
   // release, so no-JavaScript visitors get identical downloads. Update both
   // after each DitMesh release, then run tools/build_lang_pages.py.
   const FALLBACK = {
-    tag_name: 'v1.0.1',
-    name: 'DitMesh v1.0.1',
-    published_at: '2026-10-11T01:57:35Z',
+    tag_name: 'v1.1.0',
+    name: 'DitMesh v1.1.0',
+    published_at: '2026-10-18T07:05:21Z',
     assets: [
-      ['ditmesh-1.0.1-android.aab', 74863300, '44dc1d949b3d398d68624a567d1baa14fe141315ac9510f73d9f91cdbfcd9ab5'],
-      ['ditmesh-1.0.1-android.apk', 110594476, 'c9d0dbb11809a7456e7570171cb8d36024877da945529ce574a81b49e10cd833'],
-      ['ditmesh-1.0.1-ios-unsigned.ipa', 13284701, 'f50bc6dd7c56ab867c7f9033223979187ef0d2c33a1f31297b2a3b967ef7303c'],
-      ['ditmesh-1.0.1-linux-x86_64.deb', 17787620, '086b0fc3a945a69119fd70d7cc2080951e3b54d6140394392b2d96c88bf2d8e8'],
-      ['ditmesh-1.0.1-linux-x86_64.rpm', 12475345, '2f8e970e4407c17afdb84f55876fd35afc74ed5642ff4d87df2d07a611012120'],
-      ['ditmesh-1.0.1-linux-x86_64.tar.gz', 24992218, '8e58ea16160634756a6e4a19fc46095903c6511f775efe59f67d01e571783b14'],
-      ['ditmesh-1.0.1-macos-arm64.pkg', 14915383, '507a9b10c5a98cf318cf7835eef91e287baad3bc8b09fa91df1a6043c9cdb07d'],
-      ['ditmesh-1.0.1-macos-arm64.zip', 14992265, '2d6e454e8baf60a24bc42fe840505df66bc184873d3ff022d49cf072b8585643'],
-      ['ditmesh-1.0.1-macos-x86_64.pkg', 16128342, 'ff64394bfdd3c30f11fc505c49ae58d4b5b8ad9d5e845137e84183667d03cc09'],
-      ['ditmesh-1.0.1-macos-x86_64.zip', 16206757, '5b4eb55d9ec9636528b284d2e25fdf52cd741863302fa3387ef1b95165b3f7bb'],
-      ['ditmesh-1.0.1-windows-x64.msi', 18722816, 'd5399f8755ae4691b4f0e55e384228198740d505d5b19f98efed3cfb88c6c300'],
-      ['ditmesh-1.0.1-windows-x64.zip', 17843231, '552241c455aa59401f5ac1649de32ff70d37e9c70090a7fb4a8ab1150f0eb13e'],
-      ['SHA256SUMS', 1153, '']
+      ['SHA256SUMS', 1153, ''],
+      ['ditmesh-1.1.0-android.aab', 75282338, 'eff9e3ada16b1d5acbc09aa1a0b944161114dc58d088cda5f32547355e3d194a'],
+      ['ditmesh-1.1.0-android.apk', 111742132, 'a06ad805035f6a042b1ba6a67402efa9230043d1ef072805458b8d9545f86459'],
+      ['ditmesh-1.1.0-ios-unsigned.ipa', 13443748, '5708ee4bb0e0be0c97040f2e6807d3a7884b49e45cd7eb0426cba5940424976c'],
+      ['ditmesh-1.1.0-linux-x86_64.deb', 17889750, '813dbe8edcac4d1f23b5525afe684f3f3c463c9e7291b93e9900e87cf2733199'],
+      ['ditmesh-1.1.0-linux-x86_64.rpm', 12575145, 'f57ab210b22a9a9c999c1486688f2c62153f2ecd6ce3ab4f36551d36c3af2dd8'],
+      ['ditmesh-1.1.0-linux-x86_64.tar.gz', 25145079, 'e093f8a8ec5b3bffc48e9224f32968d4f458d12a4f97c50bda3dbfbc9ca6ee58'],
+      ['ditmesh-1.1.0-macos-arm64.pkg', 15072516, '64bafeefe8eb3c991ebad0010f4541a18de08abbd308a7a4a2891aa209c84a6d'],
+      ['ditmesh-1.1.0-macos-arm64.zip', 15146885, 'e449025e972654d22c60aee775012bc68ef414806df132e1cf92af7e9a16c948'],
+      ['ditmesh-1.1.0-macos-x86_64.pkg', 16285958, 'f9bec768d1adb5a11065adda8329bee88b120f648eb20b4e61318b45dfa57970'],
+      ['ditmesh-1.1.0-macos-x86_64.zip', 16364721, 'c3f467d9cac05d52418ee890439a3800dfba4777956b55043ea965cbc2bdc6af'],
+      ['ditmesh-1.1.0-windows-x64.msi', 18874368, '15ff6a499fded8974ff3766fda863808a05d9265fd7742975ac5a6df798a9bdb'],
+      ['ditmesh-1.1.0-windows-x64.zip', 17988515, 'e3f378873d991367d2730c004a7282a1e477779466ea5f64d63d72cc0c23737e']
     ].map(([name, size, sha]) => ({
       name, size,
       digest: sha ? 'sha256:' + sha : '',
-      browser_download_url: RELEASES + '/download/v1.0.1/' + name
+      browser_download_url: RELEASES + '/download/v1.1.0/' + name
     }))
   };
 
@@ -366,7 +366,7 @@
     sub.textContent = current.tag + t(' · all platforms', ' · 全部平台');
   }
 
-  // Asset names carry the release version (ditmesh-1.0.1-macos-arm64.pkg), so
+  // Asset names carry the release version (ditmesh-1.1.0-macos-arm64.pkg), so
   // links match a stable suffix instead of hard-coding the version. A release
   // must have exactly one asset per suffix; a missing or ambiguous suffix
   // disables that link rather than leaving it on an older release's file.
